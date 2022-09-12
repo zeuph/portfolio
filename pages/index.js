@@ -4,9 +4,8 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="rounded">
-      <h1 className="btn text-3xl font-bold underline bg-red-700">Hello world</h1>
-      <Link className="btn" href="/api/hello">Hello</Link>
+    <div>
+      hello
     </div>
     // <div className={styles.container}>
     //   <Head>

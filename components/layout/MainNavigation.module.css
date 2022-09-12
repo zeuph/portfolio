@@ -1,0 +1,17 @@
+.logo {
+    margin-right:auto;
+}
+.header {
+    display:flex;
+}
+.nav {
+    margin-right:auto;
+    flex-basis: 200px;
+}
+.nav ul {
+    display:flex;
+    gap:1rem;
+}
+.nav li {
+    display: inline;
+}
