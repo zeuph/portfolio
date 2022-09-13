@@ -16,34 +16,3 @@
 .bio {
   padding: 2rem 0;
 }
-.work {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 45rem;
-  padding: 0 2rem;
-  margin: auto;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.work > p {
-  padding: 0 2rem;
-  flex-basis: 50%;
-  flex-grow: 1;
-}
-
-.work > img {
-  flex-grow: 1;
-  border-radius: 10%;
-  flex-basis: 0;
-  padding-bottom: 1rem;
-}
-
-.work > .workheader {
-  padding: 0 0 2rem 0;
-  font-size: 30px;
-  text-align: center;
-  flex-basis: 100%;
-}
-.workright > img {
-}

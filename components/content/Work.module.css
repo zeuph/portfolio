@@ -1,0 +1,47 @@
+.work {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 45rem;
+  padding: 1rem 2rem;
+  margin: auto;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.work > .workheader {
+  font-size: 30px;
+  text-align: center;
+  flex-grow: -1;
+  flex-basis: 100%;
+}
+
+.work > p {
+  flex-basis: 50%;
+  flex-grow: 1;
+  order: 2;
+}
+
+.work > img {
+  flex-grow: 1;
+  border-radius: 10%;
+  flex-basis: 0;
+  order: 1;
+}
+
+.work > .learnmore {
+  order: 5;
+  text-align: center;
+}
+
+.workright > img {
+  order: 3;
+}
+@media screen and (max-width: 45rem) {
+  .workright > img {
+    order: 1;
+  }
+  .work > * {
+    flex-basis: 100%;
+  }
+}

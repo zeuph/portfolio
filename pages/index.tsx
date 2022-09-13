@@ -1,6 +1,13 @@
+import Work from "../components/content/Work";
 import classes from "../components/layout/Home.module.css";
 
-export default function Home() {
+export default function Home(props) {
+  console.log(props, "home");
+  const header = "Sunny Hills";
+  const img = "https://source.unsplash.com/random/300x300/?design";
+  const url = "/";
+  const text =
+    "Incididunt commodo deserunt excepteur do duis est. Amet adipisicing amet nulla ut anim ut laborum nulla pariatur. Incididunt reprehenderit occaecat aliquip incididunt nostrud magna cupidatat non fugiat. Dolor voluptate ut non nisi proident nisi magna pariatur. Eu laboris anim eiusmod laboris deserunt labore aliqua. Sit aliquip laborum et amet enim ipsum. Incididunt consectetur aliquip esse pariatur eiusmod excepteur cupidatat veniam duis veniam veniam aliqua.";
   return (
     <>
       <div className={classes.homemain}>
@@ -21,34 +28,7 @@ export default function Home() {
           proident non dolor.
         </div>
       </div>
-      <div className={classes.work + " " + classes.workleft}>
-        <h1 className={classes.workheader}>Work 1 </h1>
-        <img src="https://source.unsplash.com/random/300x300/?design" alt="" />
-        <p className={classes.worktext}>
-          Consequat exercitation laboris est adipisicing cillum nisi est tempor
-          incididunt consectetur duis. Laboris nisi adipisicing officia aliquip
-          nisi tempor officia. Anim culpa ex consequat est. Eu ea anim sunt
-          proident esse id deserunt do Lorem velit non velit labore deserunt.
-          Est excepteur ut dolore tempor sunt non sit officia deserunt labore
-          velit. In aliqua exercitation veniam mollit duis magna id
-          reprehenderit.
-        </p>
-        <div className={classes.learnmore}>Learn more here!</div>
-      </div>
-      <div className={classes.work + " " + classes.workright}>
-        <h1 className={classes.workheader}>Work 2 </h1>
-        <img src="https://source.unsplash.com/random/300x300/?design" alt="" />
-        <p className={classes.worktext}>
-          Consequat exercitation laboris est adipisicing cillum nisi est tempor
-          incididunt consectetur duis. Laboris nisi adipisicing officia aliquip
-          nisi tempor officia. Anim culpa ex consequat est. Eu ea anim sunt
-          proident esse id deserunt do Lorem velit non velit labore deserunt.
-          Est excepteur ut dolore tempor sunt non sit officia deserunt labore
-          velit. In aliqua exercitation veniam mollit duis magna id
-          reprehenderit.
-        </p>
-        <div className={classes.learnmore}>Learn more here!</div>
-      </div>
+      <Work header={header} img={img} url={url} text={text} />
     </>
   );
 }
