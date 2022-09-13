@@ -1,0 +1,14 @@
+.home {
+  display: flex;
+  align-items: center;
+}
+.home > img {
+  border-radius: 50%;
+  margin: auto;
+}
+.bigname {
+  font-size: 36px;
+}
+.bio {
+  padding: 2rem 0;
+}

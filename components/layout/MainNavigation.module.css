@@ -2,11 +2,14 @@
     margin-right:auto;
 }
 .header {
-    display:flex;
+    width:100%;
+    font-size:20px;
 }
+
 .nav {
-    margin-right:auto;
-    flex-basis: 200px;
+    display:flex;
+    max-width:40rem;
+    margin:auto;
 }
 .nav ul {
     display:flex;
