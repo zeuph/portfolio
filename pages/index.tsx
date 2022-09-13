@@ -1,8 +1,7 @@
 import Work from "../components/content/Work";
 import classes from "../components/layout/Home.module.css";
 
-export default function Home(props) {
-  console.log(props, "home");
+export default function Home() {
   const header = "Sunny Hills";
   const img = "https://source.unsplash.com/random/300x300/?design";
   const url = "/";
@@ -28,7 +27,20 @@ export default function Home(props) {
           proident non dolor.
         </div>
       </div>
-      <Work header={header} img={img} url={url} text={text} />
+      <Work
+        header={header}
+        img={img}
+        url={url}
+        text={text}
+        imgRightSide={true}
+      />
+      <Work
+        header={header}
+        img={img}
+        url={url}
+        text={text}
+        imgRightSide={false}
+      />
     </>
   );
 }

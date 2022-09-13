@@ -1,20 +1,25 @@
 .logo {
-    margin-right:auto;
+  margin-right: auto;
 }
 .header {
-    width:100%;
-    font-size:20px;
+  position: fixed;
+  width: 100%;
+  font-size: 20px;
+  border-bottom: 2px solid gray;
 }
 
 .nav {
-    display:flex;
-    max-width:40rem;
-    margin:auto;
+  display: flex;
+  max-width: 40rem;
+  margin: auto;
+  padding: 1rem 0;
+  /* border-bottom: 2px solid gray; */
+  backdrop-filter: blur(10px);
 }
 .nav ul {
-    display:flex;
-    gap:1rem;
+  display: flex;
+  gap: 1rem;
 }
 .nav li {
-    display: inline;
+  display: inline;
 }

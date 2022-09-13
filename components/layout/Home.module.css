@@ -1,18 +1,21 @@
 .homemain {
-  max-width: 30rem;
+  max-width: 35rem;
   margin: auto;
 }
 .home {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 .home > img {
   border-radius: 50%;
-  margin: auto;
 }
+
 .bigname {
   font-size: 36px;
 }
 .bio {
+  max-width: 30rem;
   padding: 2rem 0;
+  margin: auto;
 }

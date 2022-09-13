@@ -24,9 +24,9 @@
 
 .work > img {
   flex-grow: 1;
-  border-radius: 10%;
   flex-basis: 0;
   order: 1;
+  border-radius: 10%;
 }
 
 .work > .learnmore {
@@ -37,8 +37,10 @@
 .workright > img {
   order: 3;
 }
+
 @media screen and (max-width: 45rem) {
   .workright > img {
+    max-width: 60%;
     order: 1;
   }
   .work > * {
