@@ -12,7 +12,7 @@ export function MainNavigation() {
               <Link href="/">Home</Link>
             </li>
             <li>
-              <Link href="/projects">Projects</Link>
+              <Link href="/">Projects</Link>
             </li>
           </ul>
         </div>
