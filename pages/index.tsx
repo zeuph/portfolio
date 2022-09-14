@@ -18,6 +18,7 @@ export default function Home() {
           <Image
             src="https://source.unsplash.com/random/200x200/?portrait"
             alt=""
+            layout="fixed"
             width="200px"
             height="200px"
           />

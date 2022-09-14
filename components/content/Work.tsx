@@ -10,7 +10,7 @@ export default function Work({
   imgRightSide,
 }: {
   header: string;
-  img: string;
+  img: any;
   text: string;
   url: string;
   imgRightSide: boolean;

@@ -9,6 +9,7 @@
   align-items: center;
   flex-direction: column;
   gap: 1rem;
+  justify-content: space-between;
   animation: fadeIn 1s;
 }
 .home__header img {
@@ -16,8 +17,8 @@
 }
 
 .home__name {
-  flex-basis: 100%;
   text-align: center;
+  display: inline;
 }
 .home__bio {
   max-width: 30rem;
