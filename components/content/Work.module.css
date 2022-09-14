@@ -9,7 +9,7 @@
   gap: 1rem;
 }
 
-.work > .workheader {
+.work > .work__header {
   font-size: 30px;
   text-align: center;
   flex-grow: -1;
@@ -25,25 +25,24 @@
 .work > img {
   flex-grow: 1;
   flex-basis: 0;
-  order: 1;
   border-radius: 10%;
+  max-width: 80%;
 }
 
-.work > .learnmore {
+.work > .work__learnmore {
   order: 5;
   text-align: center;
 }
 
-.workright > img {
-  order: 3;
+.workright {
+  order: 1;
 }
 
-@media screen and (max-width: 45rem) {
-  .workright > img {
-    max-width: 60%;
-    order: 1;
-  }
-  .work > * {
-    flex-basis: 100%;
+.work > * {
+  flex-basis: 100%;
+}
+@media screen and (min-width: 45rem) {
+  .workright {
+    order: 3;
   }
 }
