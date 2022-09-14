@@ -22,16 +22,26 @@
   order: 2;
 }
 
-.work > img {
+.work__imgcontainer {
   flex-grow: 1;
-  flex-basis: 0;
-  border-radius: 10%;
+  flex-basis: 50%;
   max-width: 80%;
+}
+.work__imgcontainer img {
+  border-radius: 25px;
 }
 
 .work > .work__learnmore {
   order: 5;
   text-align: center;
+  display: inline-block;
+  padding: 2rem;
+}
+.work__learnmore a {
+  padding: 1rem;
+  background: linear-gradient(#fafafa, lightgray);
+  color: black;
+  border-radius: 5px;
 }
 
 .workright {
