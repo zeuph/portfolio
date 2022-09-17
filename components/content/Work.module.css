@@ -2,7 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   max-width: 45rem;
-  padding: 1rem 2rem;
+  padding: 1rem 0rem;
   margin: auto;
   flex-direction: row;
   justify-content: center;
@@ -20,15 +20,19 @@
   flex-basis: 50%;
   flex-grow: 1;
   order: 2;
+  padding: 0 1rem;
+}
+.work > h1 {
+  margin-bottom: 0;
 }
 
 .work__imgcontainer {
+  position: relative;
   flex-grow: 1;
-  flex-basis: 50%;
-  max-width: 80%;
-}
-.work__imgcontainer img {
-  border-radius: 25px;
+  flex-basis: 100%;
+  min-height: 20rem;
+  width: 100%;
+  overflow: hidden;
 }
 
 .work > .work__learnmore {
@@ -53,6 +57,8 @@
 }
 @media screen and (min-width: 45rem) {
   .workright {
-    order: 3;
+  }
+  .work__imgcontainer {
+    min-height: 25rem;
   }
 }

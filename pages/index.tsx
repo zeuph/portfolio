@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import kimmieface from "public/img/kimmie_face.jpg";
 import sunnyhillsimg from "public/img/sunnyhills.png";
 import Work from "../components/content/Work";
 import classes from "../components/layout/Home.module.css";
@@ -15,22 +16,19 @@ export default function Home() {
       <div className={classes.home}>
         <div className={classes.home__header}>
           <h1 className={classes.home__name}>Kimmie Arvidsson</h1>
-          <Image
-            src="https://source.unsplash.com/random/200x200/?portrait"
-            alt=""
-            layout="fixed"
-            width="200px"
-            height="200px"
-          />
+          <div className={classes.home__img}>
+            <Image priority src={kimmieface} alt="" objectFit="contain" />
+          </div>
         </div>
         <div className={classes.home__bio}>
-          Ipsum nulla et voluptate commodo culpa velit. Nisi officia enim
-          incididunt ex sunt. Duis aute proident ipsum enim velit nisi.
-          Excepteur dolor excepteur Lorem dolor dolor. Consectetur do ea nisi
-          consectetur qui sunt incididunt exercitation. Minim pariatur qui sint
-          velit officia minim sint adipisicing sit et nostrud irure officia
-          laborum. Ut laborum do et anim veniam eiusmod nisi laboris ipsum
-          proident non dolor.
+          Kimmie is a full-stack developer based in Skövde with a passion for
+          building IT solutions. He has a knack for all things IT, from setup
+          and configuration of his own servers or designing to developing his
+          own applications is where his defining problem solving skills shine
+          through. Outside of IT, Kimmie has a long lasting and underlying
+          interest for eastern philosophy and mysticism. Currently Kimmie is
+          finishing his studies to become a web developer and is eager to face
+          the world.
         </div>
         <div className={classes.home__social}>
           <Link href="https://github.com/zeuph">

@@ -20,8 +20,10 @@ export default function Work({
   return (
     <div className={classes.work}>
       <h1 className={classes.work__header}>{header}</h1>
-      <div className={classes.work__imgcontainer}>
-        <Image src={img} width={1920} height={1080} />
+      <div
+        className={`${classes.work__imgcontainer} ${sideOfParagraphToRenderPicture}`}
+      >
+        <Image src={img} layout="fill" objectFit="contain" />
       </div>
       <p className={classes.work__text}>{text}</p>
       <div className={classes.work__learnmore}>
