@@ -1,34 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getWork, getWorks } from "../../fixtures/works";
 import classes from "./Work.module.css";
 
-export default function Work({
-  header,
-  img,
-  text,
-  url,
-  imgRightSide,
-}: {
+interface param {
   header: string;
   img: any;
   text: string;
   url: string;
   imgRightSide: boolean;
-}) {
+}
+export default function Work(props: param) {
   const sideOfParagraphToRenderPicture =
-    imgRightSide == true ? classes.workright : "";
+    props.imgRightSide == true ? classes.workright : "";
+
+  console.log(props)
+
   return (
     <div className={classes.work}>
-      <h1 className={classes.work__header}>{header}</h1>
-      <div
-        className={`${classes.work__imgcontainer} ${sideOfParagraphToRenderPicture}`}
-      >
-        <Image src={img} layout="fill" objectFit="contain" />
-      </div>
-      <p className={classes.work__text}>{text}</p>
-      <div className={classes.work__learnmore}>
-        <Link href={url}> Open project</Link>
-      </div>
+        <>
+          <h1 className={classes.work__header}>{props.header}</h1>
+          <div
+            className={`${classes.work__imgcontainer}`}
+          >
+            <Image src={props.img} fill sizes="100vw" />
+          </div>
+          <p className={classes.work__text}>{props.text}</p>
+        </> 
     </div>
   );
 }

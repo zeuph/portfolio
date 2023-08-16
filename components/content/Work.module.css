@@ -30,7 +30,7 @@
   position: relative;
   flex-grow: 1;
   flex-basis: 100%;
-  min-height: 20rem;
+  height:auto;
   width: 100%;
   overflow: hidden;
 }
@@ -54,6 +54,12 @@
 
 .work > * {
   flex-basis: 100%;
+}
+
+.work__text {
+  text-align: center;
+  font-style: italic;
+  color:lightgray;
 }
 @media screen and (min-width: 45rem) {
   .workright {

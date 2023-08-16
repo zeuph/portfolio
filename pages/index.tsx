@@ -6,19 +6,19 @@ import Work from "../components/content/Work";
 import classes from "../components/layout/Home.module.css";
 
 export default function Home() {
-  const header = "Sunny Hills";
+  const header = "Sunny Hill";
   const img = "https://source.unsplash.com/random/1920x1080/?design";
   const url = "/";
   const text =
-    "Incididunt commodo deserunt excepteur do duis est. Amet adipisicing amet nulla ut anim ut laborum nulla pariatur. Incididunt reprehenderit occaecat aliquip incididunt nostrud magna cupidatat non fugiat. Dolor voluptate ut non nisi proident nisi magna pariatur. Eu laboris anim eiusmod laboris deserunt labore aliqua. Sit aliquip laborum et amet enim ipsum. Incididunt consectetur aliquip esse pariatur eiusmod excepteur cupidatat veniam duis veniam veniam aliqua.";
+    "Incididunt commodo deserunt excepteur do duis est. Amet adipisicing amet nulla ut anim ut laborum nulla pariatur.";
   return (
     <>
       <div className={classes.home}>
         <div className={classes.home__header}>
-          <h1 className={classes.home__name}>Kimmie Arvidsson</h1>
           <div className={classes.home__img}>
             <Image priority src={kimmieface} alt="" objectFit="contain" />
           </div>
+          <h1 className={classes.home__name}>Kimmie Arvidsson</h1>
         </div>
         <div className={classes.home__bio}>
           Kimmie is a full-stack developer based in Skövde with a passion for
@@ -30,6 +30,24 @@ export default function Home() {
           finishing his studies to become a web developer and is eager to face
           the world.
         </div>
+      </div>
+      <div className={classes.home__works}>
+        <Work
+          header={header}
+          img={sunnyhillsimg}
+          url={url}
+          text={text}
+          imgRightSide={true}
+        />
+        <Work
+          header={header}
+          img={img}
+          url={url}
+          text={text}
+          imgRightSide={false}
+        />
+      </div>
+
         <div className={classes.home__social}>
           <Link href="https://github.com/zeuph">
             <svg
@@ -58,21 +76,6 @@ export default function Home() {
             <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z" />
           </svg>
         </div>
-      </div>
-      <Work
-        header={header}
-        img={sunnyhillsimg}
-        url={url}
-        text={text}
-        imgRightSide={true}
-      />
-      <Work
-        header={header}
-        img={img}
-        url={url}
-        text={text}
-        imgRightSide={false}
-      />
     </>
   );
 }

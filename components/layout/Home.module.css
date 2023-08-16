@@ -43,6 +43,14 @@
 .home__social svg:hover {
   fill: black;
 }
+.home__works {
+  display:flex;
+  flex:1;
+  flex-direction: column;
+}
+.home__works>div:nth-child(odd) {
+  background-color:#1e212a;
+}
 @media screen and (min-width: 45rem) {
   .home__header {
     flex-direction: row;
