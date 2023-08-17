@@ -1,3 +1,8 @@
+:root {
+  --default-accent-color: rgb(0, 111, 136);
+  --default-background-color:rgb(50, 50, 50);
+}
+
 html,
 body {
   padding: 0;
@@ -18,3 +23,4 @@ a {
 * {
   box-sizing: border-box;
 }
+

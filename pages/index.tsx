@@ -84,6 +84,20 @@ export default function Home() {
           text={text}
           tags={["Native CSS", "API", "SQL"]}
         />
+        <Work
+          header={header}
+          img={sunnyhillsimg}
+          url={url}
+          text={text}
+          tags={["Native CSS", "API", "SQL"]}
+        />
+        <Work
+          header={header}
+          img={sunnyhillsimg}
+          url={url}
+          text={text}
+          tags={["Native CSS", "API", "SQL"]}
+        />
       </div>
       <div className={classes.home__footer}>
         <p>©Kimmie Arvidsson</p>

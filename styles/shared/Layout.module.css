@@ -1,6 +1,6 @@
 .main {
   /*background: #2b2f3c;*/
-  background: #282828;
+  background: var(--default-background-color);
   transition: background-color 0.2s ease;
 }
 
