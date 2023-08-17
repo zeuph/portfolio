@@ -2,23 +2,25 @@ import Image from "next/image";
 import Link from "next/link";
 import kimmieface from "public/img/kimmie_face.jpg";
 import sunnyhillsimg from "public/img/sunnyhills.png";
-import Work from "../components/content/Work";
-import classes from "../components/layout/Home.module.css";
+import Work from "../components/work/Work";
+import classes from "../styles/home/Home.module.css";
 
 export default function Home() {
   const header = "Sunny Hill";
   const img = "https://source.unsplash.com/random/1920x1080/?design";
   const url = "/";
   const text =
-    "Incididunt commodo deserunt excepteur do duis est. Amet adipisicing amet nulla ut anim ut laborum nulla pariatur.";
+    "Incididunt IncididuntIncididuntIncididuntIncididuntIncididuntIncididunt commodo deserunt excepteur do duis est. Amet adipisicing amet nulla ut anim ut laborum nulla pariatur.Incididunt IncididuntIncididuntIncididuntIncididuntIncididuntIncididunt commodo deserunt excepteur do duis est. Amet adipisicing amet nulla ut anim ut laborum nulla pariatur.";
   return (
     <>
       <div className={classes.home}>
         <div className={classes.home__header}>
           <div className={classes.home__img}>
-            <Image priority src={kimmieface} alt="" objectFit="contain" />
+        <h1 className={classes.home__name}>Kimmie</h1>
+            <div className={classes.home__imglandscape}>
+              <Image priority src={kimmieface} fill alt="" style={{objectFit: 'cover'}} />
+            </div>
           </div>
-          <h1 className={classes.home__name}>Kimmie Arvidsson</h1>
         </div>
         <div className={classes.home__bio}>
           Kimmie is a full-stack developer based in Skövde with a passion for
@@ -38,13 +40,6 @@ export default function Home() {
           url={url}
           text={text}
           imgRightSide={true}
-        />
-        <Work
-          header={header}
-          img={img}
-          url={url}
-          text={text}
-          imgRightSide={false}
         />
       </div>
 

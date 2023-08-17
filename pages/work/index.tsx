@@ -1,5 +1,5 @@
-import Work from "../../components/content/Work";
 import classes from "../../components/styles/WorkIndex.module.css";
+import Work from "../../components/work/Work";
 
 export default function WorkIndex() {
   const header = "Sunny Hills";

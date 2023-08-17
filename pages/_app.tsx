@@ -1,5 +1,4 @@
-import "../components/layout/animations.css";
-import { Layout } from "../components/layout/Layout";
+import { Layout } from "../components/shared/Layout";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {

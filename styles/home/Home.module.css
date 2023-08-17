@@ -8,20 +8,27 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 1rem;
   justify-content: space-between;
 }
+
 .home__img {
-  position: relative;
-  max-height: 15rem;
-  width: 35%;
-  border-radius: 50%;
-  overflow: hidden;
+  display:inline-block;
+  width:300px;
+  text-align: center;
+}
+
+.home__imglandscape {
+  margin:0 auto;
+  position:relative;
+  width:300px;
+  height:300px;
+  overflow:hidden;
+  border-radius: 15%;
+  filter:grayscale(50%);
 }
 
 .home__name {
-  text-align: center;
-  display: inline;
+  text-align: left;
 }
 .home__bio {
   max-width: 30rem;
