@@ -2,23 +2,37 @@ import Image from "next/image";
 import Link from "next/link";
 import kimmieface from "public/img/kimmie_face.jpg";
 import sunnyhillsimg from "public/img/sunnyhills.png";
+import Tag from "../components/shared/Tag";
 import Work from "../components/work/Work";
 import classes from "../styles/home/Home.module.css";
 
 export default function Home() {
-  const header = "Sunny Hill";
+  const header = "Sunny Hills";
   const img = "https://source.unsplash.com/random/1920x1080/?design";
   const url = "/";
   const text =
-    "Incididunt IncididuntIncididuntIncididuntIncididuntIncididuntIncididunt commodo deserunt excepteur do duis est. Amet adipisicing amet nulla ut anim ut laborum nulla pariatur.Incididunt IncididuntIncididuntIncididuntIncididuntIncididuntIncididunt commodo deserunt excepteur do duis est. Amet adipisicing amet nulla ut anim ut laborum nulla pariatur.";
+    "Sunny hills was produced by me alone during one of the database and API courses where we made requests to an API to fetch and store data in a database. I made a fictional website which include a ordering system, modal and loading animation during payment.";
+  const tagText = [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "Node.JS",
+    "JQuery",
+    "TypeScript",
+  ];
   return (
     <>
       <div className={classes.home}>
         <div className={classes.home__header}>
           <div className={classes.home__img}>
-        <h1 className={classes.home__name}>Kimmie</h1>
             <div className={classes.home__imglandscape}>
-              <Image priority src={kimmieface} fill alt="" style={{objectFit: 'cover'}} />
+              <Image
+                priority
+                src={kimmieface}
+                fill
+                alt=""
+                style={{ objectFit: "cover" }}
+              />
             </div>
           </div>
         </div>
@@ -32,17 +46,7 @@ export default function Home() {
           finishing his studies to become a web developer and is eager to face
           the world.
         </div>
-      </div>
-      <div className={classes.home__works}>
-        <Work
-          header={header}
-          img={sunnyhillsimg}
-          url={url}
-          text={text}
-          imgRightSide={true}
-        />
-      </div>
-
+        <Tag text={tagText} />
         <div className={classes.home__social}>
           <Link href="https://github.com/zeuph">
             <svg
@@ -71,6 +75,20 @@ export default function Home() {
             <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z" />
           </svg>
         </div>
+      </div>
+      <div className={classes.home__works}>
+        <Work
+          header={header}
+          img={sunnyhillsimg}
+          url={url}
+          text={text}
+          tags={["Native CSS", "API", "SQL"]}
+        />
+      </div>
+      <div className={classes.home__footer}>
+        <p>©Kimmie Arvidsson</p>
+        <p>+46725002358</p>
+      </div>
     </>
   );
 }

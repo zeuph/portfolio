@@ -4,7 +4,6 @@
   margin: auto;
   flex-direction: row;
   justify-content: center;
-  gap: 1rem;
 }
 
 .work__header {
@@ -21,12 +20,18 @@
   padding: 0 1rem;
 }
 .work h1 {
-  margin-bottom: 0;
+  margin:.3rem;
 }
 
 .work__imgcontainer {
+  overflow:hidden;
+  margin:.5rem;
 }
 
+.work__imgcontainer img {
+  border-radius: .8rem;
+  scale:1;
+}
 .work > .work__learnmore {
   order: 5;
   text-align: center;
