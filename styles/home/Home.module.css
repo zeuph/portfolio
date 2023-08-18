@@ -78,11 +78,3 @@
 .home__contact p {
   flex-grow:2;
 }
-@media screen and (min-width: 45rem) {
-  .home__header {
-    flex-direction: row;
-  }
-  .home__name {
-    text-align: left;
-  }
-}
