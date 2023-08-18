@@ -1,0 +1,19 @@
+
+.tagBox {
+    display: flex;
+    margin:auto;
+    gap:1rem;
+    padding:1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.tag {
+    opacity:0.;
+    background:#343434;
+    display:inline;
+    font-size: .8rem;
+    padding: 0.3rem 1rem;
+    border-radius: 5rem;
+    border:solid var(--default-accent-color) 2px;
+}

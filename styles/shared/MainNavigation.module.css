@@ -1,0 +1,26 @@
+.logo {
+  margin-right: auto;
+}
+.header {
+  position: fixed;
+  width: 100%;
+  font-size: 20px;
+  border-bottom: 2px solid var(--default-accent-color);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+
+.nav {
+  display: flex;
+  max-width: 40rem;
+  margin: auto;
+  padding: 0.5rem 1rem;
+  align-items: center;
+}
+.nav ul {
+  display: flex;
+  gap: 1rem;
+}
+.nav li {
+  display: inline;
+}

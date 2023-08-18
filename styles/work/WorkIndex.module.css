@@ -1,0 +1,9 @@
+.container {
+  margin: auto;
+  text-align: center;
+}
+
+
+.works {
+  display:flex;
+}
