@@ -1,25 +1,20 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import kimmieface from 'public/img/kimmie_face.jpg';
-import sunnyhillsimg from 'public/img/sunnyhills.png';
-import Tag from '../components/shared/Tag';
-import Work from '../components/work/Work';
-import classes from '../styles/home/Home.module.css';
+import Tag from '@/components/shared/Tag'
+import Work from '@/components/work/Work'
+import workData from '@/fixtures/workfixtures'
+import classes from '@/styles/home/Home.module.css'
+import Image from 'next/image'
+import Link from 'next/link'
+import kimmieface from 'public/img/kimmie_face.jpg'
 
 export default function Home() {
-  const header = 'Sunny Hills';
-  const img = 'https://source.unsplash.com/random/1920x1080/?design';
-  const url = '/';
-  const text =
-    'Sunny hills was produced by me alone during one of the database and API courses where we made requests to an API to fetch and store data in a database. I made a fictional website which include a ordering system, modal and loading animation during payment.';
   const tagText = [
     'HTML',
-    'CSS',
     'JavaScript',
-    'Node.JS',
-    'JQuery',
+    'CSS',
     'TypeScript',
-  ];
+    'Node.JS',
+    'React',
+  ]
   return (
     <>
       <div className={classes.home}>
@@ -77,32 +72,20 @@ export default function Home() {
         </div>
       </div>
       <div className={classes.home__works}>
-        <Work
-          header={header}
-          img={sunnyhillsimg}
-          url={url}
-          text={text}
-          tags={['Native CSS', 'API', 'SQL']}
-        />
-        <Work
-          header={header}
-          img={sunnyhillsimg}
-          url={url}
-          text={text}
-          tags={['Native CSS', 'API', 'SQL']}
-        />
-        <Work
-          header={header}
-          img={sunnyhillsimg}
-          url={url}
-          text={text}
-          tags={['Native CSS', 'API', 'SQL']}
-        />
+        {workData.map((work, index) => (
+          <Work
+            header={work.header}
+            img={work.img}
+            url={work.url}
+            text={work.text}
+            tags={work.tagtext}
+          />
+        ))}
       </div>
       <div className={classes.home__footer}>
-        <p>©Kimmie Arvidsson</p>
         <p>+46725002358</p>
+        <p>©Kimmie Arvidsson</p>
       </div>
     </>
-  );
+  )
 }
