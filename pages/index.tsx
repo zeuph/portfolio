@@ -1,24 +1,24 @@
-import Image from "next/image";
-import Link from "next/link";
-import kimmieface from "public/img/kimmie_face.jpg";
-import sunnyhillsimg from "public/img/sunnyhills.png";
-import Tag from "../components/shared/Tag";
-import Work from "../components/work/Work";
-import classes from "../styles/home/Home.module.css";
+import Image from 'next/image';
+import Link from 'next/link';
+import kimmieface from 'public/img/kimmie_face.jpg';
+import sunnyhillsimg from 'public/img/sunnyhills.png';
+import Tag from '../components/shared/Tag';
+import Work from '../components/work/Work';
+import classes from '../styles/home/Home.module.css';
 
 export default function Home() {
-  const header = "Sunny Hills";
-  const img = "https://source.unsplash.com/random/1920x1080/?design";
-  const url = "/";
+  const header = 'Sunny Hills';
+  const img = 'https://source.unsplash.com/random/1920x1080/?design';
+  const url = '/';
   const text =
-    "Sunny hills was produced by me alone during one of the database and API courses where we made requests to an API to fetch and store data in a database. I made a fictional website which include a ordering system, modal and loading animation during payment.";
+    'Sunny hills was produced by me alone during one of the database and API courses where we made requests to an API to fetch and store data in a database. I made a fictional website which include a ordering system, modal and loading animation during payment.';
   const tagText = [
-    "HTML",
-    "CSS",
-    "JavaScript",
-    "Node.JS",
-    "JQuery",
-    "TypeScript",
+    'HTML',
+    'CSS',
+    'JavaScript',
+    'Node.JS',
+    'JQuery',
+    'TypeScript',
   ];
   return (
     <>
@@ -31,7 +31,7 @@ export default function Home() {
                 src={kimmieface}
                 fill
                 alt=""
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: 'cover' }}
               />
             </div>
           </div>
@@ -82,21 +82,21 @@ export default function Home() {
           img={sunnyhillsimg}
           url={url}
           text={text}
-          tags={["Native CSS", "API", "SQL"]}
+          tags={['Native CSS', 'API', 'SQL']}
         />
         <Work
           header={header}
           img={sunnyhillsimg}
           url={url}
           text={text}
-          tags={["Native CSS", "API", "SQL"]}
+          tags={['Native CSS', 'API', 'SQL']}
         />
         <Work
           header={header}
           img={sunnyhillsimg}
           url={url}
           text={text}
-          tags={["Native CSS", "API", "SQL"]}
+          tags={['Native CSS', 'API', 'SQL']}
         />
       </div>
       <div className={classes.home__footer}>
