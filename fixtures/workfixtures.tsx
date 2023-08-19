@@ -8,7 +8,7 @@ const workData = [
     header: 'Webbprogrammering',
     img: sunnyhillsimg,
     url: '/sunnyhills/index.html',
-    text: 'Sunny hills was produced by me alone during one of the database and API courses where we made requests to an API to fetch and store data in a database. I made a fictional website which include a ordering system, modal and loading animation during payment.',
+    text: "Sunny hills was produced by me alone during one of the database and API courses where we made requests to an API to fetch and store data in a database. I made a fictional website which include a ordering system, modal and loading animation during payment.\nThe course also included things like history tokens for SAP and how to store history tokens in local storage. Local storage was also used to store certain things like whether you're logged in or not.",
     tagtext: ['HTML', 'CSS', 'JavaScript', 'JQuery', 'SQL', 'API'],
   },
   {

@@ -1,6 +1,7 @@
 :root {
   --default-accent-color: rgb(0, 111, 136);
-  --default-background-color: rgb(50, 50, 50);
+  --default-background-color: rgb(43, 51, 65);
+  /*--default-background-color: rgb(50, 50, 50);*/
 }
 
 html,
@@ -20,9 +21,18 @@ body {
     Helvetica Neue,
     sans-serif;
 }
-body {
+html {
   background: var(--default-background-color);
+}
+
+body {
   color: white;
+  background: linear-gradient(
+    180deg,
+    rgb(27, 40, 51) 0%,
+    var(--default-background-color) 30%
+  );
+  transition: background 200ms ease;
 }
 
 a {

@@ -16,10 +16,13 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint', 'prettier'],
   rules: {
-    "react/react-in-jsx-scope": "off",
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
-    "react/prop-types": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off", // Adjust other TypeScript rules as needed
-    "prettier/prettier": "warning"
+    'react/react-in-jsx-scope': 'off',
+    'react/jsx-filename-extension': [
+      1,
+      { extensions: ['.js', '.jsx', '.ts', '.tsx'] },
+    ],
+    'react/prop-types': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off', // Adjust other TypeScript rules as needed
+    'prettier/prettier': 'error',
   },
 }
