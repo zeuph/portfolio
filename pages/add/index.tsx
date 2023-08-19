@@ -1,6 +1,3 @@
-import sunnyhillsimg from '../../public/img/sunnyhills.png'
-import classes from '../../styles/add/Add.module.css'
-
 export default function AddIndex() {
   return (
     <form method="POST" action="http://192.168.1.108">

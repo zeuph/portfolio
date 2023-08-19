@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Webbapp projekt</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+    <script src="https://raw.githack.com/HGustavs/Shaker.js/master/shaker.js"></script>
+    <script>
+      /* ----- Javascript for SPA - Single Page Application logic ----- */
+      // Help function that shows page p and hides all other pages
+      var page = 0;
+      function showPage(p) {
+        // Step 1 - Hide all pages
+        pageArr = document.getElementsByClassName("page");
+        for (let i = 0; i < pageArr.length; i++) {
+          let page = pageArr[i];
+          page.style.display = "none";
+        }
+        // Step 2 - Show the selected page
+        document.getElementById("page" + p).style.display = "block";
+
+        // Step 3 - Make buttons inactive
+        btnArr = document.getElementsByClassName("btn");
+        for (let i = 0; i < btnArr.length; i++) {
+          let btn = btnArr[i];
+          btn.classList.remove("active");
+        }
+        // Step 4 - Make page button active
+        let navBtn = document.getElementById("nav" + p);
+        if (navBtn) {
+          navBtn.classList.add("active");
+        }
+
+        if (p == 4) {
+          document.getElementById("skiMan").classList.remove("skiManimation");
+          hideElement("stopSign");
+        } else if (p == 5) {
+          document.getElementById("olle").classList.remove("ollie");;
+        }
+        page = p;
+      }
+      /* -----  ----- */
+
+      // Init function. Here we can put code that is needed to initialize our prototype.
+      function initPrototype() {
+        // For example, when using sound or sensors this becomes important.
+        console.log("==> Prototype init started.");
+      }
+
+      function initHammer() {
+        /* Double tap */
+        var toucharea = document.getElementById("game");
+        var mc = new Hammer(toucharea);
+        mc.on("doubletap", function (event) {
+          tap(event);
+        });
+
+        /* Swiping function */
+        noOfpages = document.getElementsByClassName("gallery-page").length;
+        var swipearea = document.getElementById("gallerycontainer");
+        var swipehammer = Hammer(swipearea);
+        swipehammer.on("swiperight", function (event) {
+          swipe(-1);
+        });
+        swipehammer.on("swipeleft", function (event) {
+          swipe(1);
+        });
+      }
+
+      function tap(event) {
+        if (event.target.className == "buttonA") {
+          document.getElementById("skiMan").classList.add("skiManimation");
+        } else if (event.target.className == "buttonB") {
+          showElement("stopSign");
+        }
+      }
+
+      function hideElement(element) {
+        var x = document.getElementById(element);
+        x.classList.remove("show");
+        x.classList.remove("stopSignimation");
+        x.classList.add("hide");
+      }
+      function showElement(element) {
+        var x = document.getElementById(element);
+        x.classList.remove("hide");
+        x.classList.add("stopSignimation");
+        x.classList.add("show");
+      }
+
+      /* Swiping feature */
+      var noOfpages;
+      var galleryPage = 2;
+      function swipe(direction) {
+        var newGalleryPage = galleryPage + direction;
+        // if we swipe beyond the first page, we go to last page instead.
+        if (newGalleryPage == 0) {
+          newGalleryPage = noOfpages;
+        }
+        // if we swipe beyond the last page, we go to first page instead.
+        else if (newGalleryPage > noOfpages) {
+          newGalleryPage = 1;
+        }
+        if (direction == 1) {
+          showSwipePageLeft(newGalleryPage);
+        } else {
+          showSwipePageRight(newGalleryPage);
+        }
+      }
+      function showSwipePageRight(newSwipePage) {
+        document.getElementById("gallery-page" + galleryPage).style.animation =
+          "outright 1s ease-in-out 0s 1 forwards";
+        document.getElementById("gallery-page" + newSwipePage).style.animation =
+          "inleft 1s ease-in-out 0s 1 forwards";
+        galleryPage = newSwipePage;
+      }
+      function showSwipePageLeft(newSwipePage) {
+        document.getElementById("gallery-page" + galleryPage).style.animation =
+          "outleft 1s ease-in-out 0s 1 forwards";
+        document.getElementById("gallery-page" + newSwipePage).style.animation =
+          "inright 1s ease-in-out 0s 1 forwards";
+        galleryPage = newSwipePage;
+      }
+
+      /* Shake it baby */
+      function initJump() {
+        shaker.on("step", function (o) {
+          jump();
+        });
+      }
+
+      function jump() {
+        if (page == 5) {
+          document.getElementById("olle").classList.add("ollie");
+        }
+      }
+    </script>
+  </head>
+  <body onload="showPage(0);initHammer();initJump();">
+    <!-- Page0 is needed for prototype init. DON'T REMOVE! -->
+    <div id="page0" class="page">
+      <div
+        style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: rgba(50, 50, 50, 0.5);
+          z-index: 1000;
+        "
+      >
+        <button
+          class="btn"
+          type="button"
+          onclick="initPrototype();showPage(1);"
+        >
+          Start prototype
+        </button>
+      </div>
+    </div>
+    <!-- Page0 is needed for prototype init. DON'T REMOVE! -->
+
+    <!-- navbar överst på alla sidor -->
+    <nav id="navbar">
+      <button id="logo" class="btn" type="button" onclick="showPage(1);">
+        Home
+      </button>
+      <button id="nav1" class="btn active" type="button" onclick="showPage(2);">
+        Info
+      </button>
+      <button id="nav2" class="btn" type="button" onclick="showPage(3);">
+        Gallery
+      </button>
+      <button id="nav3" class="btn" type="button" onclick="showPage(4);">
+        Quiz
+      </button>
+      <button id="nav4" class="btn" type="button" onclick="showPage(5);">
+        Olle
+      </button>
+      <button id="nav5" class="btn" type="button" onclick="showPage(6);">
+        License
+      </button>
+      <button id="nav6" class="btn" type="button" onclick="showPage(7);">
+        +47 812345123
+      </button>
+      <button id="nav7" class="btn" type="button" onclick="showPage(7);">
+        #
+      </button>
+    </nav>
+    <!-- alla sidor -->
+    <div id="page1" class="page">
+      <div class="row">
+        <div class="container homepicture">
+          <img src="img/snowboarder.png" alt="" />
+        </div>
+        <div class="container hometext">
+          <h1>Why don't you join us snowboard</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+            rutrum velit in elit dictum, at rutrum urna pulvinar. Integer ut
+            fringilla purus.
+          </p>
+          <div class="btn-focus" type="button"><a href="#">Join us</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="page2" class="page">
+      <div class="container row info">
+        <div class="rowitem">
+          <h1>Headline</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+            rutrum velit in elit dictum, at rutrum urna pulvinar. Integer ut
+            fringilla purus. Interdum et malesuada fames ac ante ipsum primis in
+            faucibus. Aliquam congue tristique ligula, eu luctus velit cursus
+            eget. Curabitur sit amet auctor nulla. Duis justo sem, maximus vitae
+            purus non, convallis pretium dolor. Maecenas sed ipsum mi.
+            Suspendisse quis diam metus. Orci varius natoque penatibus et magnis
+            dis parturient montes, nascetur ridiculus mus. Etiam elementum
+            tincidunt ipsum in laoreet.
+          </p>
+        </div>
+        <div class="rowitem">
+          <img src="img/goggles.png" alt="" class="goggles" />
+        </div>
+      </div>
+      <div class="bg-dark text-center">
+        <div class="container">
+          <div class="row">
+            <div class="rowitem">
+              <h1>Great Workout!</h1>
+              <p>
+                Snowboarding will give you a great workout so it's a great
+                activity for someone who values health and having fun in
+                combination!
+              </p>
+            </div>
+            <div class="rowitem">
+              <h1>Fun!</h1>
+              <p>
+                Once you get the hang of snowboarding it's rewarding in many
+                ways but the most important one is that it's loads of fun!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div id="imgframe">
+            <img
+              src="https://cdn.pixabay.com/photo/2016/08/09/21/54/lake-1581879_960_720.jpg"
+              alt=""
+            />
+            <img
+              class="top"
+              src="https://cdn.pixabay.com/photo/2016/02/13/12/26/aurora-1197753_960_720.jpg"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="page3" class="page">
+      <div id="gallerycontainer">
+        <h1>Different kinds of tricks!</h1>
+        <p>Swipe to see more</p>
+        <div id="gallery">
+          <div id="gallery-page1" class="gallery-page">
+            <img src="img/tricks/kitesurfing_cropped.jpg" />
+            <div class="captiontext">
+              <h2>Kiteboarding</h2>
+              <p>
+                When kiteboarding you're using a kite to use the wind to pull
+                you forward!
+              </p>
+            </div>
+          </div>
+          <div id="gallery-page2" class="gallery-page">
+            <img src="img/tricks/snowboard_cropped.jpg" />
+            <div class="captiontext">
+              <h2>180 Jump</h2>
+              <p>
+                The classic 180 degree jump trick requires you to do half a
+                rotation of your own axis.
+              </p>
+            </div>
+          </div>
+          <div id="gallery-page3" class="gallery-page">
+            <img src="img/tricks/indygrab_cropped.jpg" />
+            <div class="captiontext">
+              <h2>Indy Grab</h2>
+              <p>
+                Indy grab is iconic for pulling your legs towards your body and
+                grabbing the center of your board.
+              </p>
+            </div>
+          </div>
+          <div class="galleryButton prev btn" onClick="swipe(-1)">Prev</div>
+          <div class="galleryButton next btn" onClick="swipe(1)">Next</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="page4" class="page">
+      <div id="game">
+        <div id="stopSign">
+          <img src="img/stopsign.png" alt="" />
+        </div>
+        <h1>Quiz</h1>
+        <p>Double click to answer</p>
+        <div id="gameField">
+          <p>
+            What mentioned trick in this app involves rotating around your own
+            axis?
+          </p>
+        </div>
+        <div id="gameButtonA" class="buttonA">
+          <p class="buttonA">180 Jump</p>
+        </div>
+        <div id="gameButtonB" class="buttonB">
+          <p class="buttonB">Kiteboarding</p>
+        </div>
+      </div>
+      <div id="svgSlope">
+        <svg width="100%" height="400px" viewBox="0 0 400 300">
+          <g id="treeOne">
+            <rect
+              fill="#7f3f00"
+              x="93.09372"
+              y="128.46463"
+              width="13.19149"
+              height="37.87234"
+              stroke="#000000"
+            />
+            <path
+              fill="#007f00"
+              d="m60.26394,135.32366l38.93615,-59.57446l38.93617,59.57446l-77.87232,0z"
+              stroke="#000000"
+            />
+            <path
+              fill="#007f00"
+              d="m63.24266,115.74919l35.10637,-62.97871l35.10638,62.97871l-70.21275,0z"
+              stroke="#000000"
+            />
+            <path
+              fill="#007f00"
+              stroke="#000000"
+              d="m71.05511,87.62659l28.0851,-53.61702l28.0851,53.61702l-56.1702,0z"
+            />
+          </g>
+          <g id="skiMan">
+            <ellipse
+              ry="36.94444"
+              rx="36.66667"
+              cy="289.72222"
+              cx="321.11111"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              stroke="#ffffff"
+              fill="#000000"
+            />
+            <ellipse
+              stroke="#ffffff"
+              ry="14.44445"
+              rx="25.83333"
+              id="svg_13"
+              cy="282.77778"
+              cx="343.05556"
+              opacity="undefined"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#009dff"
+            />
+            <rect
+              stroke="#000000"
+              transform="rotate(32.75875473022461 290.84381103515625,355.840087890625) "
+              id="svg_20"
+              height="85.06016"
+              width="11.66667"
+              y="313.31"
+              x="285.01048"
+              opacity="undefined"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#000000"
+            />
+            <rect
+              stroke="#000000"
+              transform="rotate(-28.0805721282959 281.72604370117193,408.3673706054687) "
+              id="svg_21"
+              height="51.17026"
+              width="12.22222"
+              y="382.78226"
+              x="275.61493"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#000000"
+            />
+            <rect
+              stroke="#000000"
+              transform="rotate(6.525588035583496 287.671020507813,456.1558837890627) "
+              id="svg_22"
+              height="63.94128"
+              width="11.53868"
+              y="424.18521"
+              x="281.90171"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#000000"
+            />
+            <rect
+              stroke="#000000"
+              transform="rotate(-3.3925509452819824 291.78463745117267,488.8984069824219) "
+              id="svg_25"
+              height="8.84651"
+              width="228.33333"
+              y="484.47514"
+              x="177.61799"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#000000"
+            />
+            <rect
+              stroke="#000000"
+              transform="rotate(9.294001579284668 264.5038146972655,412.2562561035155) "
+              id="svg_27"
+              height="51.17026"
+              width="12.22222"
+              y="386.67114"
+              x="258.39271"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#000000"
+            />
+            <rect
+              stroke="#000000"
+              transform="rotate(-1.2571649551391602 260.3269348144451,451.71408081054733) "
+              id="svg_28"
+              height="52.83284"
+              width="11.53868"
+              y="425.29766"
+              x="254.55763"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#000000"
+            />
+            <rect
+              transform="rotate(45.74318313598633 311.1111145019531,355.8333435058594) "
+              stroke="#000000"
+              id="svg_29"
+              height="9.44444"
+              width="38.88891"
+              y="351.11111"
+              x="291.66666"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#000000"
+            />
+            <rect
+              transform="rotate(87.4797592163086 245.8333129882812,375.83337402343756) "
+              id="svg_30"
+              height="131.66667"
+              width="1.66667"
+              y="310"
+              x="244.99999"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              stroke="#000000"
+              fill="#000000"
+            />
+            <rect
+              stroke="#000000"
+              transform="rotate(144.67416381835938 312.4003295898438,373.2235412597656) "
+              id="svg_31"
+              height="9.99027"
+              width="27.40249"
+              y="368.22841"
+              x="298.69911"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#000000"
+            />
+            <rect
+              stroke="#000000"
+              transform="rotate(-3.3925509452819824 292.3401794433602,473.89840698242114) "
+              id="svg_32"
+              height="8.84651"
+              width="228.33333"
+              y="469.47514"
+              x="178.17355"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#000000"
+            />
+            <rect
+              transform="rotate(45.74318313598633 311.1111145019531,355.8333435058594) "
+              stroke="#000000"
+              id="svg_33"
+              height="9.44444"
+              width="38.88891"
+              y="351.11111"
+              x="291.66666"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              fill="#000000"
+            />
+            <rect
+              transform="rotate(94.5693359375 244.72219848632812,369.16668701171875) "
+              id="svg_34"
+              height="131.66667"
+              width="1.66667"
+              y="303.33334"
+              x="243.88888"
+              opacity="undefined"
+              fill-opacity="null"
+              stroke-opacity="null"
+              stroke-dasharray="null"
+              stroke-width="null"
+              stroke="#000000"
+              fill="#000000"
+            />
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div id="page5" class="page">
+      <div class="container ollecontainer">
+        <h1>Olle</h1>
+        <h3>Make Olle do a ollie by shaking your phone!</h3>
+        <div id="svgOlle">
+          <svg width="100%" height="300px" viewBox="0 0 400 500">
+            <g id="olle">
+              <rect
+                stroke="null"
+                transform="rotate(84.59037017822266 295.85485839843756,327.30023193359375) "
+                id="svg_13"
+                height="237.80366"
+                width="44.07245"
+                y="208.3984"
+                x="273.81865"
+                opacity="undefined"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#0a026b"
+              />
+              <ellipse
+                ry="36"
+                rx="38.5"
+                id="svg_25"
+                cy="111.12948"
+                cx="333.6846"
+                opacity="undefined"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(26.96926498413086 292.4994201660157,174.55184936523438) "
+                id="svg_26"
+                height="114.8869"
+                width="36"
+                y="117.1084"
+                x="274.49948"
+                opacity="undefined"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(-62.24460220336914 300.72631835937494,242.91773986816406) "
+                id="svg_27"
+                height="80.89036"
+                width="26.06666"
+                y="202.47253"
+                x="287.69297"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(4.3867621421813965 260.2955322265608,254.79364013671875) "
+                id="svg_28"
+                height="80.70198"
+                width="20.92333"
+                y="214.44267"
+                x="249.83393"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(-2.3606178760528564 329.48910522460994,284.6901550292968) "
+                id="svg_29"
+                height="55.1156"
+                width="19.41434"
+                y="257.13236"
+                x="319.78197"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(11.836050033569336 253.83692932128943,310.34234619140614) "
+                id="svg_30"
+                height="55.1156"
+                width="19.41434"
+                y="282.78453"
+                x="244.1298"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(-52.639671325683594 325.6859741210937,172.68586730957026) "
+                id="svg_31"
+                height="72.42295"
+                width="12.47894"
+                y="136.47438"
+                x="319.44646"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(-29.29837417602539 237.96340942382807,165.1068878173828) "
+                id="svg_32"
+                height="42.45382"
+                width="13.00661"
+                y="143.87998"
+                x="231.4601"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(-83.4762191772461 263.94683837890625,154.8597869873047) "
+                id="svg_33"
+                height="72.42295"
+                width="12.47894"
+                y="118.6483"
+                x="257.70733"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(-79.59196472167969 366.6589660644532,194.672103881836) "
+                id="svg_34"
+                height="42.45382"
+                width="13.00661"
+                y="173.44519"
+                x="360.15576"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <ellipse
+                ry="16.52174"
+                rx="30.43478"
+                id="svg_35"
+                cy="108.54252"
+                cx="349.55417"
+                opacity="undefined"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                stroke="null"
+                fill="#00ffff"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(-2.3606178760528564 330.5952758789075,316.2403869628915) "
+                id="svg_50"
+                height="26.76671"
+                width="32.05999"
+                y="302.85703"
+                x="314.56529"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(-2.3606178760528564 250.7210540771498,327.5611267089845) "
+                id="svg_48"
+                height="26.76671"
+                width="32.05999"
+                y="314.17778"
+                x="234.69108"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(-2.3606178760528564 335.1512451171865,323.6549377441405) "
+                id="svg_51"
+                height="17.44437"
+                width="56.6711"
+                y="314.93275"
+                x="306.81569"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+              <rect
+                stroke="null"
+                transform="rotate(-2.3606178760528564 254.6465148925791,334.9368591308594) "
+                id="svg_49"
+                height="17.36665"
+                width="56.6711"
+                y="326.25353"
+                x="226.31094"
+                opacity="undefined"
+                fill-opacity="null"
+                stroke-opacity="null"
+                stroke-dasharray="null"
+                stroke-width="null"
+                fill="#000000"
+              />
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div id="page6" class="page">
+      <div class="license container">
+        <h1>Licenses</h1>
+        <p>
+          <a href="https://pixabay.com/photos/kite-kitesurfing-winter-1571228/"
+            >Kitesurfing picture</a
+          >
+          licensed free for commercial use.
+        </p>
+        <p>
+          <a href="https://unsplash.com/photos/OKBP1D8Wr4c"
+            >Indy grab picture</a
+          >
+          licensed
+          <a href="https://unsplash.com/license">free for commercial use.</a>
+        </p>
+        <p>
+          <a
+            href="https://pixabay.com/photos/snowboarding-snow-springboard-1161799/"
+            >180 Jump picture</a
+          >
+          licensed free for commercial use.
+        </p>
+        <p>
+          <a
+            href="https://pixabay.com/photos/snowboard-man-winter-snow-extreme-1151063/"
+            >Goggles picture</a
+          >
+          licensed free for commercial use.
+        </p>
+        <p>
+          <a
+            href="https://pixabay.com/illustrations/snow-boarder-skying-sport-ski-1335696/"
+            >Homepage picture</a
+          >
+          licensed free for commercial use.
+        </p>
+        <p>
+          <a href="https://pixabay.com/photos/aurora-northern-lights-1197753/"
+            >Aurora Borealis Picture</a
+          >
+          licensed free for commercial use.
+        </p>
+        <p>
+          <a
+            href="https://pixabay.com/photos/lake-snow-mountains-trees-1581879/"
+            >Lake picture</a
+          >
+          licensed free for commercial use.
+        </p>
+      </div>
+    </div>
+
+    <div id="page7" class="page"></div>
+  </body>
+</html>

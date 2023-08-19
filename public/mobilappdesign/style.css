@@ -1,0 +1,475 @@
+@font-face {
+  font-family: "Rubik Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Rubik Regular"), url("fonts/Rubik-Regular.woff") format("woff");
+}
+@font-face {
+  font-family: "Rubik Medium";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Rubik Medium"), url("fonts/Rubik-Medium.woff") format("woff");
+}
+
+:root {
+  --primary-color: #20478a;
+  --secondary-color: #f0972d;
+
+  --light-color: #f6f6f7;
+  --dark-color: #333;
+
+  --primary-font: "Rubik Regular";
+  --secondary-font: "Rubik Regular";
+  --secondary-bold-font: "Rubik Medium";
+}
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--primary-font);
+  margin: 0;
+  background: var(--light-color);
+  line-height: 1.3;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 1rem;
+}
+h1,
+h2,
+h3 {
+  font-family: var(--secondary-font);
+}
+
+#navbar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  background-color: var(--light-color);
+  border-bottom: solid 3px;
+  border-color: var(--primary-color);
+}
+
+#navbar > *:nth-child(7) {
+  margin-left: auto;
+  padding: 0 0.5em;
+}
+#nav7 {
+  display: none;
+}
+.btn {
+  background-color: var(--light-color);
+  border: none;
+  font-size: 1em;
+  padding: 1em 1.5em;
+  color: var(--primary-color);
+  font-family: var(--secondary-bold-font);
+}
+
+.btn-focus {
+  text-align: center;
+}
+.btn-focus a {
+  color: var(--light-color);
+  text-transform: uppercase;
+  text-decoration: none;
+  background: var(--secondary-color);
+  padding: 1em;
+  border-radius: 5px;
+  display: inline-block;
+  border: none;
+  font-family: var(--secondary-font);
+}
+
+.container {
+  width: 90%;
+  max-width: 50rem;
+  margin: 0 auto;
+}
+.container h1 {
+  text-align: center;
+}
+.license {
+  border: solid 2px var(--primary-color);
+  border-radius: 5px;
+  margin-top: 1em;
+  text-align: center;
+}
+.license h1 {
+  padding: 0;
+  margin: 0;
+}
+.license p {
+  font-size: 1.25em;
+  padding: 0;
+  margin: 0.5em auto;
+}
+.license a {
+  text-decoration: none;
+  color: var(--secondary-color);
+}
+
+.info img {
+  max-width: 20rem;
+}
+
+.homepicture {
+  margin: 3rem 0 0 10%;
+  height: auto;
+  width: 30rem;
+  min-width: 30rem;
+}
+
+.homepicture img {
+  max-width: 100%;
+}
+.hometext {
+  width: 100%;
+  margin: 10em 0 0 10%;
+  max-width: 20em;
+}
+.hometext h1 {
+  color: var(--primary-color);
+  font-size: 3em;
+}
+.hometext p {
+  font-size: 0.9em;
+  color: var(--dark-color);
+}
+
+.row {
+  display: flex;
+  gap: 1em;
+}
+.bg-dark {
+  background: var(--dark-color);
+  color: var(--light-color);
+  padding: 3rem 0;
+  margin: 5rem 0;
+}
+
+.text-center {
+  text-align: center;
+}
+#imgframe {
+  position: relative;
+  width: 100%;
+  left: -50%;
+  text-align: center;
+}
+#imgframe img.top {
+  animation-name: imgframeFade;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 10s;
+  animation-direction: alternate;
+}
+#imgframe img {
+  position: absolute;
+  width: 100%;
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}
+#game {
+  width: 90%;
+  max-width: 20rem;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 1rem auto;
+}
+#game > * {
+  flex: 1 1 100%;
+}
+#gameButtons {
+  transform: translate(0px, 200px);
+}
+#gameField {
+  border: solid 2px var(--primary-color);
+}
+#game p {
+  padding: 1em;
+  text-align: center;
+}
+#game > p {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  font-style: italic;
+  font-size: 0.75em;
+}
+#game h1 {
+  text-align: center;
+  padding: 0;
+  margin: 0.5em;
+}
+#gameButtonA {
+  margin: 1em 0;
+  border: solid 2px var(--secondary-color);
+}
+#gameButtonB {
+  border: solid 2px var(--secondary-color);
+}
+#svgSlope {
+  width: 95%;
+  max-width: 55rem;
+  margin: 0 auto;
+}
+#svgOlle {
+  width: 95%;
+  max-width: 55rem;
+  margin: 0 auto;
+}
+#skiMan {
+  transform: translate(-800px, -200px);
+}
+.skiManimation {
+  animation-name: skiman;
+  animation-duration: 2000ms;
+  animation-iteration-count: unset;
+  animation-timing-function: linear;
+}
+#treeOne {
+  transform: translate(0, 0px);
+}
+#stopSign {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+.show {
+  display: block;
+}
+.hide {
+  display: none;
+}
+.stopSignimation {
+  animation-name: stopsign;
+  animation-duration: 500ms;
+  animation-timing-function: linear;
+}
+
+/* Gallery */
+
+#gallerycontainer {
+  width: 100%;
+  height: 90vh;
+  max-width: 540px;
+  margin: 0 auto;
+  text-align: center;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  touch-action: pan-y;
+  overflow: hidden;
+}
+#gallery-page2 {
+  z-index: 500;
+}
+.gallery-page > img {
+  width: 100%;
+}
+.gallery-page {
+  position: absolute;
+  width: 100%;
+}
+.captiontext {
+  width: 100%;
+  position: absolute;
+  color: var(--secondary-color);
+  background: rgba(0, 0, 0, 0.8);
+  bottom: 0;
+}
+#gallery {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.galleryButton {
+  position: absolute;
+  color: var(--primary-color);
+  border: solid 2px var(--primary-color);
+  border-radius: 5px;
+  z-index: 500;
+}
+.next {
+  right: 0;
+}
+.prev {
+  left: 0;
+}
+.ollecontainer {
+  text-align: center;
+}
+#svgOlle {
+  margin-top: 5em;
+}
+#olle {
+  height: 2em;
+  transform: translate(-150px, 100px);
+}
+.ollie {
+  animation-name: ollie;
+  animation-duration: 500ms;
+  animation-iteration-count: unset;
+  animation-timing-function: linear;
+}
+@media screen and (max-width: 600px) {
+  .hometext {
+    margin: 5em auto;
+    max-width: 20rem;
+    text-align: center;
+  }
+  .homepicture {
+    display: none;
+  }
+  .row {
+    flex-wrap: wrap;
+  }
+  .row > * {
+    flex: 1 1 10em;
+  }
+  .info > .rowitem:nth-child(2) {
+    display: none;
+  }
+  #nav6 {
+    display: none;
+  }
+  #nav7 {
+    display: block;
+  }
+  #navbar > *:nth-child(8) {
+    margin-left: auto;
+  }
+  .btn {
+    padding: 0.5em 0.35em;
+  }
+  .captiontext {
+    height: 5rem;
+  }
+  .captiontext p,
+  .captiontext h2 {
+    margin: 0;
+    padding: 0;
+  }
+  #stopSign {
+    top: 25%;
+  }
+  #stopSign img {
+    width: 100%;
+  }
+  .galleryButton {
+    padding: 1em 2em;
+  }
+}
+@media screen and (min-width: 601px) and (max-width: 750px) {
+  .hometext {
+    margin: 3rem 1rem;
+    max-width: 20rem;
+  }
+  .homepicture {
+    margin: 3rem 0 0 10%;
+    height: auto;
+    width: 20rem;
+    min-width: 20rem;
+  }
+}
+@media screen and (min-width: 750px) {
+}
+
+@keyframes imgframeFade {
+  0% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes inleft {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 0%;
+  }
+}
+@keyframes inright {
+  0% {
+    left: 100%;
+  }
+  100% {
+    left: 0%;
+  }
+}
+@keyframes outleft {
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+@keyframes outright {
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes skiman {
+  0% {
+    transform: translate(-800px, -200px);
+  }
+  50% {
+    transform: translate(-200px, -200px);
+  }
+  100% {
+    transform: translate(400px, -140px);
+  }
+}
+
+@keyframes ollie {
+  0% {
+    transform: translate(-150px, 100px);
+  }
+  50% {
+    transform: translate(-120px, -20px);
+  }
+  100% {
+    transform: translate(-110px, 100px);
+  }
+}
+
+@keyframes stopsign {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

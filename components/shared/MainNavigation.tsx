@@ -1,5 +1,5 @@
-import Link from "next/link";
-import classes from "../../styles/shared/MainNavigation.module.css";
+import Link from 'next/link'
+import classes from '../../styles/shared/MainNavigation.module.css'
 
 export function MainNavigation() {
   return (
@@ -18,5 +18,5 @@ export function MainNavigation() {
         </div>
       </nav>
     </div>
-  );
+  )
 }

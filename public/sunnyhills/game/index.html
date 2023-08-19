@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Game</title>
+  </head>
+  <body>
+    <div class="score">
+      <span>Score: </span>
+      <span id="smallScore">0</span>
+    </div>
+    <div id="scoreBoardContainer" class="scoreBoardContainer">
+      <div class="scoreBoard">
+        <span>
+          <h1 id="bigScore">0</h1>
+        </span>
+        <span>Score</span>
+        <button onClick="init();">Play</button>
+      </div>
+    </div>
+    <div class="gameboard">
+      <canvas id="sandbox" onmousedown="mouseDown(event);"></canvas>
+    </div>
+    <img
+      id="chair"
+      src="https://opengameart.org/sites/default/files/styles/medium/public/ChairModern_0.png"
+      alt=""
+    />
+
+    <script type="text/javascript" src="script.js"></script>
+  </body>
+</html>

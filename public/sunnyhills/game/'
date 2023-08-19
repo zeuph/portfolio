@@ -1,0 +1,113 @@
+const canvas = document.getElementById("sandbox");
+console.log(canvas);
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const ctx = canvas.getContext("2d");
+
+function Customer(x, y, r, c, m) {
+  this.x = x;
+  this.y = y;
+  this.r = r;
+  this.c = c;
+  this.m = m;
+
+  this.draw = function () {
+    ctx.beginPath();
+    ctx.fillstyle = this.c;
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fill();
+  };
+
+  this.animate = function () {
+    if (this.y < 900) {
+      this.y++;
+    }
+    if (this.x < 500) {
+      this.x++;
+    } else if (this.x > 500) {
+      this.x--;
+    }
+    this.draw();
+    if (typeof m.getMessage() === "string") {
+      m.drawMessage(this.x, this.y, this.r);
+    }
+  };
+}
+
+function Message(m) {
+  this.m = m;
+
+  this.drawMessage = function (x, y, r) {
+    let message = this.m;
+    let height = 50;
+    let width = 100;
+
+    ctx.beginPath();
+    ctx.fillstyle = "white";
+    ctx.moveTo(x + r, y - height);
+    ctx.lineTo(x + width, y - height);
+    ctx.lineTo(x + width, y + r);
+    ctx.lineTo(x + r, y + r);
+    ctx.font = "20px Georgia";
+    ctx.fillText(message, 10 + width / 2, 10 + height / 2);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.closePath();
+    ctx.stroke();
+  };
+
+  this.setMessage = function (m) {
+    this.m = m;
+  };
+
+  this.getMessage = function () {
+    return this.m;
+  };
+}
+
+function Player(x, y, r, c) {
+  this.x = x;
+  this.y = y;
+  this.r = r;
+  this.c = c;
+
+  this.draw = function () {
+    ctx.beginPath();
+    ctx.fillstyle = this.c;
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fill();
+  };
+  console.log(this.x + " " + this.y);
+}
+
+const max = canvas.width - canvas.width * 0.2;
+const min = canvas.width - canvas.width * 0.8;
+
+const customerArr = [];
+const player = new Player(
+  canvas.width - canvas.width * 0.5,
+  canvas.height - canvas.height * 0.1,
+  15,
+  "red"
+);
+
+for (let i = 0; i < 1; i++) {
+  let r = 15;
+  let x = Math.floor(Math.random() * (max - min + 1) + min);
+  let y = 30;
+  let c = "blue";
+  customerArr.push(new Customer(x, y, r, c, new Message("Hello")));
+}
+
+function Update() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = 0; i < customerArr.length; i++) {
+    let customer = customerArr[i];
+    customer.animate();
+  }
+  player.draw();
+  requestAnimationFrame(Update);
+}
+Update();

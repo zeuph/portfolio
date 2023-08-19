@@ -12,18 +12,18 @@
 }
 
 .home__img {
-  display:inline-block;
+  display: inline-block;
   text-align: center;
 }
 
 .home__imglandscape {
-  margin:0 auto;
-  position:relative;
-  width:300px;
-  height:300px;
-  overflow:hidden;
+  margin: 0 auto;
+  position: relative;
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
   border-radius: 15%;
-  filter:grayscale(50%);
+  filter: grayscale(50%);
 }
 
 .home__name {
@@ -33,17 +33,17 @@
   max-width: 30rem;
   padding: 2rem;
   margin: auto;
-  text-align: center;
+  text-align: justify;
 }
 .home__social {
-  background:#1e212a;
+  background: #1e212a;
   display: flex;
   gap: 3rem;
   align-items: center;
   justify-content: center;
   padding: 1rem 0 1rem;
   border-bottom: 2px solid var(--default-accent-color);
-  border-top:2px solid var(--default-accent-color);
+  border-top: 2px solid var(--default-accent-color);
 }
 .home__social path {
   fill: white;
@@ -52,15 +52,15 @@
   fill: black;
 }
 .home__works {
-  display:flex;
-  flex:1;
+  display: flex;
+  flex: 1;
   flex-direction: column;
 }
 .home__works > div {
-  border-bottom:2px solid var(--default-accent-color);
+  border-bottom: 2px solid var(--default-accent-color);
 }
 .home__works > div:nth-child(even) {
-  background-color:#1e212a;
+  background-color: #1e212a;
 }
 .home__footer {
   display: flex;
@@ -69,12 +69,12 @@
   padding-top: 1rem;
 }
 .home__footer p {
-  padding:0;
-  margin:0;
+  padding: 0;
+  margin: 0;
 }
 .home__contact {
-  display:flex;
+  display: flex;
 }
 .home__contact p {
-  flex-grow:2;
+  flex-grow: 2;
 }

@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Sunny Hills</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://kit.fontawesome.com/18b8fe873b.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script>
+
+        // Apptype for the api
+        var apptype = "a20kimar_booking";
+        var clearcart = false;
+
+        /* ----- Javascript for SPA - Single Page Application logic ----- */
+        // Help function that shows page p and hides all other pages
+        function showPage(p) {
+            // Step 1 - Hide all pages
+            pageArr = document.getElementsByClassName("page");
+
+            for (let i = 0; i < pageArr.length; i++) {
+                let page = pageArr[i];
+                page.style.display = "none";
+            }
+            // Step 2 - Show the selected page
+            document.getElementById("page" + p).style.display = "block";
+        }
+        /* -----  ----- */
+
+        /*  
+            ----NOTES----
+            
+            ! fix picture size on registration+login+cart+userinfo and maybe booking !
+            
+            When adding a second of the same item, the dates in the cart stay the same. Change this.
+            
+            Make a better way of storing primary key for bookings. Convert user id to int somehow?
+            
+            fix so loadcontainer is fully removed when not shown
+
+            make addition to the api so user can change profile picture
+            
+            --VG--
+            [*] Generisk funktion
+            [ ] Sorterad lista
+            [*] Tangentbordsinteraktion 
+            [*] RegEx
+            [*] Coolare validering
+
+        */
+
+        // Initialize all eventhandlers and so on
+        function init() {
+
+            window.onpopstate = function (event) { historyChange(event); };
+
+            // Sets a minimum allowed date for booking
+            setMinDate();
+
+            // Validate registration inputs
+            $("#register-btn").click(function (e) {
+
+                // Declared all elements of my registration form
+
+                let container = $(".registration-container");
+                let fname = $("#fname");
+                let lname = $("#lname");
+                let email = $("#email");
+                let pwd = $("#pwd");
+                let pwdconfirm = $("#pwdconfirm");
+                let checkbox = $("#termsandservice");
+                let checkboxtext = $("#termsandservicetext")
+                let shake = false;
+
+                if (fname.val().length < 1) {
+                    fname.css("background-color", "#f57");
+                    shake = true;
+                }
+                if (lname.val().length < 1) {
+                    lname.css("background-color", "#f57");
+                    shake = true;
+                }
+
+                let characterReg = /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})$/;
+                console.log(characterReg.test(email.val()));
+                if (characterReg.test(email.val())) {
+                    email.css("background-color", "#cfa");
+                } else {
+                    email.css("background-color", "#f57");
+                    $('.emailtext').html("@ and .domain is required.");
+                }
+
+                if (pwd.val().length < 7) {
+                    pwd.css("background-color", "#f57");
+                    shake = true;
+                }
+                if (pwdconfirm.val().length < 7 || pwdconfirm.val() != pwd.val()) {
+                    pwdconfirm.css("background-color", "#f57");
+                    shake = true;
+                }
+                if (!checkbox.is(":checked")) {
+                    checkboxtext.css("text-decoration", "underline");
+                    checkboxtext.css("text-decoration-color", "#f57");
+                    checkboxtext.css("font-weight", "bold");
+                    shake = true;
+                }
+                if (shake) {
+                    container.effect("shake");
+
+                } else {
+                    registerUser(email.val(), fname.val(), lname.val());
+                }
+            });
+            // Validate book dates
+            $("#book-btn").click(function (e) {
+
+                // Remove all the previous searched containers
+                $(".book-search-container").remove();
+
+                if (validateDates()) {
+                    fetchResource();
+                }
+            });
+            // Validate when arrival date changes
+            $("#arrivaldate").change(function (e) {
+                let min = new Date($("#arrivaldate").val());
+                min.setDate(min.getDate() + 1);
+                $("#leavedate").attr("min", min.toISOString().split('T')[0])
+                if ($("#leavedate").val() < min.toISOString().split('T')[0]) {
+                    $("#leavedate").val(min.toISOString().split('T')[0])
+                }
+
+            });
+            // Validate login
+            $("#login-btn").click(function (e) {
+                let container = $(".login-container");
+                let pwd = $('#loginpwd');
+                let username = $('#loginusername');
+                let shake = false;
+
+
+                if (username.val().length < 1 || pwd.val().length < 1) {
+                    if (username.val().length < 1) {
+                        username.css("background-color", "#f57");
+                    }
+                    if (pwd.val().length < 1) {
+                        pwd.css("background-color", "#f57")
+                    }
+                    shake = true;
+                }
+                if (shake) {
+                    container.effect("shake");
+                } else {
+
+                    var jqxhr = $.ajax("../webbprogrammering/api/booking/getcustomer_XML.php", {
+                        method: "POST",
+                        data: {
+                            customerID: encodeURIComponent(username.val()),
+                            type: apptype
+                        }
+                    })
+                        .done(function (returnedData) {
+                            // Fix characters in XML notation to HTML notation
+                            fixChars(returnedData);
+                            // An XML DOM document is returned from AJAX
+                            var resultset = returnedData.childNodes[0];
+
+                            // Iterate over all nodes in root node
+                            for (i = 0; i < resultset.childNodes.length; i++) {
+                                if (resultset.childNodes.item(i).nodeName == "customer") {
+                                    // Retrieve first name and last name for node
+                                    var user = resultset.childNodes.item(i);
+                                    addLocalStorage(user);
+                                    location.reload();
+
+                                } else {
+                                    startLoad("Wrong username, please try again", true);
+                                }
+                            }
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            startLoad("Login failed, please try again", true);
+                            errormsg(jqxhr, textStatus, errorThrown);
+                        });
+                }
+            });
+            // Check if user is pressing enter during on a form
+            $('input').keydown(function (e) {
+                let login = $('#login-btn');
+                let registration = $('#register-btn');
+                let book = $('#book-btn');
+
+                if (e.which == 13) {
+                    let classnameArr = e.originalEvent.path[2].className.split("-");
+                    console.log(classnameArr[0])
+                    if (classnameArr[0] == "login") {
+                        login.click();
+                    } else if (classnameArr[0] == "registration") {
+                        registration.click();
+                    } else if (classnameArr[0] == "book") {
+                        book.click();
+                    }
+                }
+            });
+
+            showScore();
+            var isLoggedIn = checkLocalStorage();
+            if (isLoggedIn) {
+                login();
+            }
+        }
+
+        /* Technical stuff */
+
+        function fixChars(returnedData) {
+            var resultset = returnedData.childNodes[0];
+
+            // Iterate over all nodes in root node recursively and replace the strings inside attributes
+            x = returnedData.getElementsByTagName('*');
+            for (i = 0; i < x.length; i++) {
+                for (j = 0; j < x[i].attributes.length; j++) {
+                    x[i].attributes[j].nodeValue = x[i].attributes[j].nodeValue.replace(/%/g, "&");
+                }
+            }
+        }
+
+        function errormsg(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log("AJAX Error:" + errorThrown);
+        }
+
+        function checkLocalStorage() {
+            console.log(localStorage.length);
+            if (localStorage.length < 1) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function addLocalStorage(username) {
+            localStorage.setItem('firstname', username.attributes['firstname'].value);
+            localStorage.setItem('lastname', username.attributes['lastname'].value);
+            localStorage.setItem('username', username.attributes['id'].value);
+            localStorage.setItem('lastvisit', username.attributes['lastvisit'].value);
+        }
+
+        function clearLocalStorage() {
+            localStorage.clear();
+        }
+
+        function startLoad(text, button, page) {
+            if (!text == "") {
+                $('.load-container p').html(text);
+            } else {
+                $('.load-container p').html("Loading...");
+            }
+            $('.load-container').animate({
+                opacity: "1"
+            }, 200);
+
+            $("*").find('div').not(".load-container .loadsymbol").css('opacity', '0.3');
+            $('.load-container').css('z-index', '100');
+
+            if (button) {
+                $(".loadsymbol").css("display", "none");
+                $(".loadbutton").css("display", "inline-block")
+            } else {
+                $(".loadsymbol").css("display", "inline-block");
+                $(".loadbutton").css("display", "none")
+            }
+            if (typeof page === 'number') {
+                $(".loadbutton").click(function () {
+                    stopLoad();
+                    updateHistory(page);
+                })
+            }
+
+        }
+
+        function stopLoad() {
+            $('.load-container').animate({
+                opacity: "0"
+            }, 200);
+            $("*").find('div').not(".load-container").css('opacity', '1');
+            $('.load-container').css('z-index', '-10');
+        }
+
+        function setMinDate(minDate) {
+            const today = new Date(Date.now());
+            if (minDate) {
+                today.setDate(today.getDate() + minDate);
+            } else {
+                today.setDate(today.getDate() + 1);
+            }
+            document.getElementById("arrivaldate").min = today.toISOString().split('T')[0];
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById("leavedate").min = tomorrow.toISOString().split('T')[0];
+
+        }
+
+        /* Login/logout & register */
+
+        function logout() {
+            var isLoggedIn = checkLocalStorage();
+
+            if (isLoggedIn) {
+                clearLocalStorage();
+                location.reload();
+            } else {
+                updateHistory(5);
+            }
+        }
+
+        function login() {
+            //login should change all css and its values
+            let firstname = localStorage.getItem("firstname");
+            let lastname = localStorage.getItem("lastname");
+            let username = localStorage.getItem("username");
+            let lastvisit = localStorage.getItem("lastvisit");
+
+
+
+            // Welcome message on page 1
+            $('.username').html(firstname);
+            $('#page1 .welcome-text').css('display', 'flex');
+            checkUserBookings(username);
+
+            // Change the navbar
+            $('#navbar .username').css('display', 'block');
+
+            $('#navbar .login-btn').html("Logout");
+            $('#navbar li:nth-child(9)').css('display', 'none');
+
+            $('#navbar li:nth-child(7)').css('margin-left', 'auto');
+            $('#navbar li:nth-child(8)').css('margin-left', '0');
+
+        }
+
+        function registerUser(email, fname, lname) {
+            startLoad("Registering user please wait...", false);
+            var jqxhr = $.ajax("../webbprogrammering/api/booking/makecustomer_XML.php", {
+                type: 'POST',
+                data: {
+                    ID: encodeURIComponent(email),
+                    firstname: encodeURIComponent(fname),
+                    lastname: encodeURIComponent(lname),
+                    email: encodeURIComponent(email),
+                    address: encodeURIComponent("empty"),
+                    auxdata: encodeURIComponent("")
+                }
+            })
+                .done(function (returnedData) {
+                    startLoad("User " + email + " successfully registered!", true, 5);
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    startLoad("Booking failed, please try again", true);
+                    errormsg(jqxhr, textStatus, errorThrown);
+                });
+        }
+
+        function getUser() {
+            let firstname = localStorage.getItem("firstname");
+            let lastname = localStorage.getItem("lastname");
+            let username = localStorage.getItem("username");
+            let lastvisit = localStorage.getItem("lastvisit");
+            let user = [firstname, lastname, username, lastvisit];
+            return user;
+        }
+
+        function resultLoginUser(returnedData) {
+            // Fix characters in XML notation to HTML notation
+            fixChars(returnedData);
+
+            // An XML DOM document is returned from AJAX
+            var resultset = returnedData.childNodes[0];
+
+            // Iterate over all nodes in root node
+            for (i = 0; i < resultset.childNodes.length; i++) {
+                if (resultset.childNodes.item(i).nodeName == "customer") {
+                    // Retrieve first name and last name for node
+                    var user = resultset.childNodes.item(i);
+
+
+                    addLocalStorage(user);
+                    location.reload();
+
+                }
+            }
+        }
+
+        /* History stuff */
+
+        function historyChange(event) {
+            if (event.state > 0) {
+                showPage(event.state);
+            }
+        }
+
+        function updateHistory(token) {
+            history.pushState(token, "Titel: " + token, "");
+            showPage(token);
+        }
+
+        /* Validation */
+
+        function validate(el) {
+
+            if (el.id == "email") {
+                if (el.value.indexOf("@") != -1 && el.value.indexOf(".") != -1) {
+                    el.style.backgroundColor = "#cfa";
+                    $('.emailtext').css('display', 'none');
+                } else if (el.value.indexOf("@") == -1) {
+                    el.style.backgroundColor = "#f57";
+                    $('.emailtext').css('display', 'inline-block');
+                    $('.emailtext').html("@ is required.");
+                } else if (el.value.indexOf(".") == -1) {
+                    el.style.backgroundColor = "#f57";
+                    $('.emailtext').css('display', 'inline-block');
+                    $('.emailtext').html(".domain is required.");
+                } else {
+                    el.style.backgroundColor = "#f57";
+                    $('.emailtext').css('display', 'inline-block');
+                    $('.emailtext').html("@ and .domain is required.");
+                }
+            }
+            if (el.id == "fname" || el.id == "lname") {
+                if (el.value.length > 0) {
+                    el.style.backgroundColor = "white";
+                    var oldValue = el.value;
+                }
+            }
+            if (el.id == "pwd") {
+                if (el.value.length > 7) {
+                    el.style.backgroundColor = "#cfa";
+                } else {
+                    el.style.backgroundColor = "#f57";
+                }
+            }
+
+            if (el.id == "pwdconfirm") {
+                let pwd = document.getElementById("pwd");
+
+                if (el.value.length > 7 && el.value == pwd.value) {
+                    el.style.backgroundColor = "#cfa";
+                } else {
+                    el.style.backgroundColor = "#f57";
+                }
+            }
+            if (el.id == "termsandservice") {
+                console.log(el.checked);
+                if (el.checked) {
+                    let text = document.getElementById("termsandservicetext");
+                    text.style.border = "2px solid transparent";
+                }
+            }
+        }
+
+        function validateDates() {
+
+            let arrivalDate = new Date($("#arrivaldate").val());
+            let leaveDate = new Date($("#leavedate").val());
+            let min = new Date($("#arrivaldate").attr("min"))
+
+            if (arrivalDate < leaveDate && arrivalDate > min) {
+                return true;
+            } else {
+                startLoad("Invalid dates. Please try again.", true);
+                return false;
+            }
+
+        }
+
+        /* Book */
+
+        function bookItem(id) {
+            var jqxhr = $.ajax("../webbprogrammering/api/booking/getresources_XML.php", {
+                method: "POST",
+                data: {
+                    resID: encodeURIComponent(id),
+                    type: apptype
+                }
+            })
+                .done(function (data) {
+                    // We only store the first item since you cannot book more than one at a time
+                    let resultset = data.childNodes[0].childNodes.item(1);
+                    addItemToCart(resultset);
+                })
+                .fail(errormsg)
+                .always(function () {
+                    console.log("Fetching resources completed.");
+                });
+
+        }
+
+        function addSearchResult(resource) {
+            let auxdata = resource.attributes['auxdata'].value.split(":");
+            var amountOfPeople = $("#peopleamount").val();
+            if (amountOfPeople == resource.attributes['size'].value) {
+                let output = '<div id="container" class="book-search-container" >';
+                output += '<div class="book-search-result">';
+                output += '<img src="' + auxdata[1] + '" alt="">';
+                output += '<h2 class="col-2 row-1 search-result-title">' + resource.attributes['name'].value + '</h2>';
+                output += '<p class="col-2 row-1 small">' + resource.attributes['company'].value + '</p>';
+                output += '<p class="col-2 row-1">' + auxdata[3] + '</p>';
+                output += '<table class="col-2 row-1 amenities"><tr><td></td><td></td><td></td><td></td><td></td></tr></table>';
+                output += '<ul class="row-1 col-2 room-check-list"><li>Wifi included</li><li>Breakfast included</li><li>160-180cm Bed</li>';
+                output += '<li>' + auxdata[5] + ' m2</li></ul>';
+                output += '<h2 class="row-2 col-2 price-tag">This room is available for <span class="price">$ ' + resource.attributes['cost'].value + ' </span></h2>';
+                output += '<div id="form" class="row-2 col-2">';
+                output += '<input type="submit" value="Book now!" onclick="bookItem(\'' + resource.attributes['id'].value + '\')">';
+                output += '</div>';
+                output += '</div ></div >';
+                $(".search-section").append(output);
+            }
+        }
+
+        function fetchResource() {
+
+            var jqxhr = $.ajax("../webbprogrammering/api/booking/getresources_XML.php", {
+                method: "POST",
+                data: {
+                    type: apptype
+                }
+            })
+                .done(function (returnedData) {
+                    fixChars(returnedData);
+
+                    var resultset = returnedData.childNodes[0];
+
+                    for (i = 0; i < resultset.childNodes.length; i++) {
+                        if (resultset.childNodes.item(i).nodeName == "resource") {
+                            var resource = resultset.childNodes.item(i);
+
+                            console.log(resource.attributes['location'].value);
+
+
+                            addSearchResult(resource);
+                        }
+                    }
+                })
+                .fail(errormsg)
+                .always(function () {
+                    console.log("Fetching resources completed.");
+                });
+
+
+        }
+
+        function makeBooking() {
+            let cart = getCart();
+            let user = getUser();
+            let rebate = 0;
+            let status = 0;
+            let position = 0;
+
+            if (!user[0]) {
+                startLoad("Please login first and try again.", true, 5);
+            } else {
+                for (let i = 0; i < cart.length; i++) {
+
+                    startLoad("Booking please wait...");
+                    var jqxhr = $.ajax("../webbprogrammering/api/booking/makebooking_XML.php", {
+                        type: 'POST',
+                        data: {
+                            resourceID: encodeURIComponent(cart[i][0]),
+                            date: encodeURIComponent(cart[i][5]),
+                            dateto: encodeURIComponent(cart[i][6]),
+                            customerID: encodeURIComponent(user[2]),
+                            rebate: encodeURIComponent(rebate),
+                            status: encodeURIComponent(status),
+                            cost: encodeURIComponent(cart[i][3]),
+                            position: encodeURIComponent(position),
+                            auxdata: encodeURIComponent("img:" + cart[i][2]),
+                            type: apptype
+                        }
+                    })
+                        .done(function () {
+                            startLoad("Booking completed!", true, 7);
+                            resetCart();
+                            makeCart();
+                            clearUserInfoBookings();
+                            checkUserBookings();
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            startLoad("Booking failed, please try again.", true, 2);
+                            errormsg(jqxhr, textStatus, errorThrown);
+                        });
+                }
+            }
+        }
+
+        /* Cart */
+
+        function addItemToCart(resultset) {
+            // Fetch how many items exist in cart of local storage
+            let noOfitems = localStorage.getItem("cartItems");
+            // Split auxdata fetched from database
+            let auxdata = resultset.attributes['auxdata'].value.split(":");
+            // Boolean to determine whether a duplicate item is being inserted or not
+            let inputItem = true;
+            // Create an array of the current cart
+            let items = getCart();
+
+            if (!noOfitems) {
+                noOfitems = 0;
+            } else {
+                noOfitems++;
+            }
+            for (let i = 0; i < items.length; i++) {
+                if (items[i][0] == resultset.attributes['id'].value) {
+                    increaseQuantity(i);
+                    inputItem = false;
+                }
+
+            }
+            if (inputItem) {
+                localStorage.setItem("cartItems", noOfitems);
+
+                localStorage.setItem("cartItem-" + noOfitems + "-id", resultset.attributes['id'].value);
+                localStorage.setItem("cartItem-" + noOfitems + "-name", resultset.attributes['name'].value);
+                localStorage.setItem("cartItem-" + noOfitems + "-img", auxdata[1]);
+                localStorage.setItem("cartItem-" + noOfitems + "-price", resultset.attributes['cost'].value);
+                localStorage.setItem("cartItem-" + noOfitems + "-quantity", 1);
+                localStorage.setItem("cartItem-" + noOfitems + "-arrivaldate", $("#arrivaldate").val());
+                localStorage.setItem("cartItem-" + noOfitems + "-leavedate", $("#leavedate").val());
+
+            }
+            makeCart();
+            updateHistory(3);
+        }
+
+        function printCart() {
+            let noOfItems = localStorage.getItem("cartItems");
+            console.log("noOfItems: " + noOfItems);
+            for (let i = 0; i <= noOfItems; i++) {
+                let id = localStorage.getItem("cartItem-" + i + "-id");
+                let name = localStorage.getItem("cartItem-" + i + "-name");
+                let img = localStorage.getItem("cartItem-" + i + "-img");
+                let price = localStorage.getItem("cartItem-" + i + "-price");
+                let quantity = localStorage.getItem("cartItem-" + i + "-quantity");
+                let arrival = localStorage.getItem("cartItem-" + i + "-arrivaldate");
+                let leave = localStorage.getItem("cartItem-" + i + "-leavedate");
+                console.log(id + " " + name);
+            }
+        }
+
+        function getCart() {
+            let noOfItems = localStorage.getItem("cartItems");
+            let items = [];
+            console.log("Number of items: " + noOfItems);
+
+            for (let i = 0; i <= noOfItems; i++) {
+                let id = localStorage.getItem("cartItem-" + i + "-id");
+                let name = localStorage.getItem("cartItem-" + i + "-name");
+                let img = localStorage.getItem("cartItem-" + i + "-img");
+                let price = localStorage.getItem("cartItem-" + i + "-price");
+                let quantity = localStorage.getItem("cartItem-" + i + "-quantity");
+                let arrival = localStorage.getItem("cartItem-" + i + "-arrivaldate");
+                let leave = localStorage.getItem("cartItem-" + i + "-leavedate");
+                if (id) {
+                    items[i] = [id, name, img, price, quantity, arrival, leave];
+                    console.log("id: " + id + " name: " + name);
+                } else {
+                    console.log("Cart is empty, no storing made.");
+                }
+            }
+            return items;
+        }
+
+        function makeCart() {
+            cart = getCart();
+            let output;
+            let sumTotal = 0;
+            if (clearcart) {
+                $(".cart-container .cart-item-removable").remove();
+            }
+            for (let i = 0; i < cart.length; i++) {
+                output += "<tr class=\"cart-item-removable\">";
+                output += "<td> <div class=\"flex\">";
+
+                output += "<img src=\"" + cart[i][2] + "\">";
+                output += "<div class=\"flex column-direction\">";
+                output += "<span class=\"producttext\">" + cart[i][1] + "</span>";
+                output += "<span class=\"productextra\"># " + cart[i][0] + "</span>";
+                output += "</div></div>";
+                output += "</td>";
+                output += "<td>";
+                output += "<div class=\"staydates\"><span class=\"arrival\">" + showDate(cart[i][5]) + "</span><span> Until </span><span class=\"leave\">" + showDate(cart[i][6]) + "</span>";
+                // output += "<span class=\"productdates\">" + cart[i][5] + "-" + cart[i][6] + "</span>";
+                output += "</td>";
+                output += "<td>";
+                output += "<label id=\"minus\" onclick=\"reduceQuantity(" + i + ")\" class=\"clr-secondary untouchable\">-</label>";
+                output += "<label id=\"productquantity\" class=\"untouchable\">" + cart[i][4] + " </label>";
+                output += "<label id=\"plus\" onclick=\"increaseQuantity(" + i + ")\" class=\"clr-secondary untouchable\"> +</label>";
+                output += "</td>";
+                output += "<td>";
+                output += "$" + cart[i][3] * cart[i][4];
+                output += "</td>";
+                output += "<td class=\"remove-cart-item\" onclick=\"removeFromCart(" + i + ")\"></td>";
+                output += "</tr>";
+
+                sumTotal += cart[i][3] * cart[i][4];
+            }
+
+            output += "<tr class=\"cart-item-removable\">";
+            output += "<td></td>";
+            output += "<td></td>";
+            output += "<td></td>";
+            output += "<td>";
+            output += "<div class=\"subtotalcell\">";
+            output += "<span class=\"subtotal\">Subtotal </span>";
+            output += "<span class=\"subtotalnumber\">$" + (80 / 100) * sumTotal + "</span>";
+            output += "<span class=\"tax\">Tax</span>";
+            output += "<span class=\"taxnumber\">$" + (20 / 100) * sumTotal + "</span>";
+            output += "</div>";
+            output += "</td>";
+            output += "<td></td>";
+            output += "</tr>";
+
+            output += "<tr class=\"noborder cart-item-removable\">";
+            output += "<td></td>";
+            output += "<td></td>";
+            output += "<td></td>";
+            output += "<td>";
+            output += "<span class=\"total\">Total:</span>";
+            output += "<span class=\"totalnumber\">$" + sumTotal + "</span>";
+            output += "</td>";
+            output += "<td>";
+            output += "</td>";
+            output += "</tr>";
+
+            $(".cart-container tr:nth-last-child(2)").after(output);
+            clearcart = true;
+        }
+
+        function resetCart() {
+            let noOfItems = localStorage.getItem("cartItems");
+
+            for (let i = 0; i <= noOfItems; i++) {
+                // Check if current row has a missing/deleted item
+                console.log(localStorage.getItem("cartItem-" + i + "-id"));
+                if (localStorage.getItem("cartItem-" + i + "-id")) {
+                    console.log("deleting cartItem-" + i + "-id");
+                    localStorage.removeItem("cartItem-" + i + "-id");
+                    localStorage.removeItem("cartItem-" + i + "-name");
+                    localStorage.removeItem("cartItem-" + i + "-img");
+                    localStorage.removeItem("cartItem-" + i + "-price");
+                    localStorage.removeItem("cartItem-" + i + "-quantity");
+                    localStorage.removeItem("cartItem-" + i + "-arrivaldate");
+                    localStorage.removeItem("cartItem-" + i + "-leavedate");
+                    noOfItems--;
+                }
+            }
+            localStorage.removeItem("cartItems");
+        }
+
+        function removeFromCart(id) {
+            // go through all items, the ones above the missing one move one step down and delete, continue
+            let noOfItems = localStorage.getItem("cartItems");
+
+            // Delete the row the user clicked delete on
+            localStorage.removeItem("cartItem-" + id + "-id");
+            localStorage.removeItem("cartItem-" + id + "-name");
+            localStorage.removeItem("cartItem-" + id + "-img");
+            localStorage.removeItem("cartItem-" + id + "-price");
+            localStorage.removeItem("cartItem-" + id + "-quantity");
+            localStorage.removeItem("cartItem-" + id + "-arrivaldate");
+            localStorage.removeItem("cartItem-" + id + "-leavedate");
+
+            for (let i = 0; i <= noOfItems; i++) {
+                // Check if current row has a missing/deleted item
+                if (!localStorage.getItem("cartItem-" + i + "-id")) {
+                    let j = i;
+                    j++;
+                    // Get item from one row above
+                    let tempid = localStorage.getItem("cartItem-" + j + "-id");
+                    let tempname = localStorage.getItem("cartItem-" + j + "-name");
+                    let tempimg = localStorage.getItem("cartItem-" + j + "-img");
+                    let tempprice = localStorage.getItem("cartItem-" + j + "-price");
+                    let tempquantity = localStorage.getItem("cartItem-" + j + "-quantity");
+                    let temparrival = localStorage.getItem("cartItem-" + j + "-arrivaldate");
+                    let templeave = localStorage.getItem("cartItem-" + j + "-leavedate");
+                    // Set item on current row
+                    localStorage.setItem("cartItem-" + i + "-id", tempid);
+                    localStorage.setItem("cartItem-" + i + "-name", tempname);
+                    localStorage.setItem("cartItem-" + i + "-img", tempimg);
+                    localStorage.setItem("cartItem-" + i + "-price", tempprice);
+                    localStorage.setItem("cartItem-" + i + "-quantity", tempquantity);
+                    localStorage.setItem("cartItem-" + i + "-arrivaldate", temparrival);
+                    localStorage.setItem("cartItem-" + i + "-leavedate", templeave);
+                    // Delete one row above
+                    localStorage.removeItem("cartItem-" + j + "-id");
+                    localStorage.removeItem("cartItem-" + j + "-name");
+                    localStorage.removeItem("cartItem-" + j + "-img");
+                    localStorage.removeItem("cartItem-" + j + "-price");
+                    localStorage.removeItem("cartItem-" + j + "-quantity");
+                    localStorage.removeItem("cartItem-" + j + "-arrivaldate");
+                    localStorage.removeItem("cartItem-" + j + "-leavedate");
+
+                }
+            }
+            noOfItems--;
+            localStorage.setItem("cartItems", noOfItems);
+            makeCart();
+        }
+
+        function reduceQuantity(item) {
+            let itemQ = localStorage.getItem("cartItem-" + item + "-quantity");
+            itemQ <= 1 ? itemQ = 1 : itemQ--;
+            localStorage.setItem("cartItem-" + item + "-quantity", itemQ);
+            makeCart();
+        }
+
+        function increaseQuantity(item) {
+            let itemQ = localStorage.getItem("cartItem-" + item + "-quantity");
+            itemQ >= 14 ? itemQ = 15 : itemQ++;
+            localStorage.setItem("cartItem-" + item + "-quantity", itemQ);
+            makeCart();
+        }
+
+        function showDate(date) {
+
+            let dateArr = date.split("-");
+            let dayArr = dateArr[2].split("0");
+            if (dayArr[0] == "") {
+                dateArr[2] = dayArr[1];
+            }
+
+            var months = new Array();
+            months[0] = "January";
+            months[1] = "February";
+            months[2] = "March";
+            months[3] = "April";
+            months[4] = "May";
+            months[5] = "June";
+            months[6] = "July";
+            months[7] = "August";
+            months[8] = "September";
+            months[9] = "October";
+            months[10] = "November";
+            months[11] = "December";
+
+            dateArr[1]--;
+            let output = months[dateArr[1]] + " " + dateArr[2] + " " + dateArr[0];
+            return output;
+        }
+
+        function calcDays(date, dateto) {
+            let dateArr = date.split("-");
+            date1 = new Date(dateArr[0] + "/" + dateArr[1] + "/" + dateArr[2]);
+            dateArr = dateto.split("-");
+            date2 = new Date(dateArr[0] + "/" + dateArr[1] + "/" + dateArr[2]);
+
+            var time_difference = date2.getTime() - date1.getTime();
+            var days_difference = time_difference / (1000 * 60 * 60 * 24);
+
+            return days_difference;
+
+        }
+
+        function calcBefore(dateto) {
+            let dateArr = dateto.split("-");
+            date = new Date(dateArr[0] + " " + dateArr[1] + " " + dateArr[2]).toLocaleDateString();
+
+            const today = new Date(Date.now()).toLocaleDateString();
+
+            return today < date ? true : false;
+        }
+
+        /* User section */
+
+        function checkUserBookings() {
+            username = getUser()[2];
+
+            var jqxhr = $.ajax("../webbprogrammering/api/booking/getcustomerbookings_XML.php", {
+                type: 'POST',
+                data: {
+                    customerID: encodeURIComponent(username),
+                    type: apptype
+                }
+            })
+                .done(function (returnedData) {
+                    fixChars(returnedData);
+
+                    let resultset = returnedData.childNodes[0];
+                    var bookingArr = [];
+                    for (i = 0; i < resultset.childNodes.length; i++) {
+                        if (resultset.childNodes.item(i).nodeName == "booking") {
+                            let booking = resultset.childNodes.item(i);
+                            let location = booking.attributes['position'].value;
+                            let days = 0;
+                            if (i == 1) {
+                                $('.welcome-booking-text p').html("You have an upcoming stay at " + booking.attributes['name'].value + " in " + days + " days. Have you made sure to take part in our amenities?");
+                            }
+                            bookingArr[i] = [booking.attributes['resourceID'].value, booking.attributes['name'].value, booking.attributes['date'].value, booking.attributes['dateto'].value, booking.attributes['size'].value, booking.attributes['cost'].value, booking.attributes['auxdata']];
+                            displayUserInfoBookings(booking);
+
+
+                        }
+                    }
+
+                    addBookingArr(bookingArr);
+                })
+                .fail(errormsg)
+                .always(function () {
+                    console.log("Request for fetching users bookings has completed for " + username + ".");
+                });
+        }
+
+        function addBookingArr(bookingArr) {
+            for (let i = 0; i < bookingArr.length; i++) {
+                console.log(bookingArr[i]);
+            }
+        }
+        function displayUserInfoBookings(booking) {
+
+
+            // Turn my dates into readables. I didn't know about Date.toDateString() when making this code. Please don't scold me
+            let dateArr = booking.attributes["date"].value.split(" ");
+            let date = showDate(dateArr[0]);
+            let dateArrTo = booking.attributes["dateto"].value.split(" ");
+            let dateto = showDate(dateArrTo[0]);
+            // Calculate days between dates
+            let daysBetween = calcDays(dateArr[0], dateArrTo[0]);
+            // Calculate if the check out date is before today
+            let isBeforeToday = calcBefore(dateArrTo[0]);
+
+            let auxData = booking.attributes['auxdata'].value.split(":");
+
+            if (isBeforeToday) {
+                let output = '<div class="bookings current">';
+                output += '<div class="booking-image-' + booking.attributes['resourceID'].value + '"></div>';
+                output += '<div class="info">';
+                output += '<p class="location">' + booking.attributes['name'].value + "</p>";
+                output += '<p class="quantity">' + booking.attributes['size'].value + ' Adult(s)';
+                output += ', ' + daysBetween + ' Days</p>';
+                output += '</div>';
+                output += '<div class="info">';
+                output += '<p>Check in</p>';
+                output += '<p class="check-in">' + date + '</p>';
+                output += '</div>';
+                output += '<div class="info">';
+                output += '<p>Check out</p>';
+                output += '<p class="check-out">' + dateto + '</p>';
+                output += '</div>';
+                output += '<div class="info">';
+                output += '<input type="submit" value="Delete" onclick="deleteBooking(' + booking.attributes['resourceID'].value + ', \'' + booking.attributes['date'].value + '\')">';
+                output += '</div></div>';
+                $(".user-info").append(output);
+                $(".booking-image-" + booking.attributes['resourceID'].value).css('background-image', 'url("' + auxData[1] + '")');
+
+            } else {
+                let output = '<div class="bookings past">';
+                output += '<div class="booking-image-' + booking.attributes['resourceID'].value + '"></div>';
+                output += '<div class="info">';
+                output += '<p class="location">' + booking.attributes['name'].value + "</p>";
+                output += '<p class="quantity">' + booking.attributes['size'].value + ' Adult(s)';
+                output += ', ' + daysBetween + ' Days</p>';
+                output += '</div>';
+                output += '<div class="info">';
+                output += '<p>Check in</p>';
+                output += '<p class="check-in">' + date + '</p>';
+                output += '</div>';
+                output += '<div class="info">';
+                output += '<p>Check out</p>';
+                output += '<p class="check-out">' + dateto + '</p>';
+                output += '</div></div>';
+
+                $(".user-info").append(output);
+                $(".booking-image-" + booking.attributes['resourceID'].value).css('background-image', 'url("' + auxData[1] + '")');
+            }
+        }
+
+        function clearUserInfoBookings() {
+
+            $(".bookings").remove();
+        }
+
+        function showCurrentBookings() {
+            $('.past').css("display", "none");
+            $('.current').css("display", "flex");
+        }
+
+        function showPastBookings() {
+
+            $('.current').css("display", "none");
+            $('.past').css("display", "flex");
+        }
+
+        function deleteBooking(resourceID, date) {
+            let user = getUser();
+
+            startLoad("Deleting please wait...");
+            var jqxhr = $.ajax("../webbprogrammering/api/booking/deletebooking_XML.php", {
+                type: 'POST',
+                data: {
+                    resourceID: encodeURIComponent(resourceID),
+                    date: encodeURIComponent(date),
+                    customerID: encodeURIComponent(user[2]),
+                    type: apptype
+                }
+            })
+                .done(function () {
+                    startLoad("Deleting completed!", true, 7);
+                    clearUserInfoBookings();
+                    checkUserBookings();
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    startLoad("Deleting failed, please try again.", true);
+                    errormsg(jqxhr, textStatus, errorThrown);
+                });
+        }
+
+    </script>
+</head>
+
+<body onload="init();updateHistory(1);">
+    </div>
+    <nav id="navbar">
+        <ul>
+            <li onclick="updateHistory(1);">
+                <h2 class="logo">Sunny Hills</h2>
+            </li>
+            <li onclick="updateHistory(1);">Home</li>
+            <li onclick="updateHistory(2);">Book</li>
+            <li onclick="makeCart();updateHistory(3);">Cart</li>
+            <li onclick="updateHistory(4);">Search</li>
+            <li onclick="updateHistory(8)">Game</li>
+            <li onclick="updateHistory(7);" class="username"></li>
+            <li onclick="logout()" class="login-btn">Login</li>
+            <li onclick="updateHistory(6);">Register</li>
+        </ul>
+    </nav>
+    <div class="load-container untouchable">
+        <h2 class="logo">Sunny Hills</h2>
+        <p> Loading...</p>
+        <div class="loadsymbol"></div>
+        <input type="submit" value="Ok" class="loadbutton" onclick="stopLoad();">
+    </div>
+    <div id="page1" class="page">
+        <section class="welcome-text">
+            <div class="greeting">
+                <h2>Welcome back <span class="username">user</span>!</h2>
+            </div>
+            <div class="welcome-booking-text">
+                <p></p>
+                <input type="submit" value="More details" onclick="updateHistory(7)">
+            </div>
+        </section>
+        <h2 class="splashimage">ENJOY THE AUTUMN AT <span class="logo-font">SUNNY HILLS</span>!</h2>
+        <section class="frontpage-text">
+            <h2 class="title-small">Enjoy a comfortable stay at <span class="logo-font">Sunny hills</span></h2>
+            <p>Eiusmod ex eu nulla pariatur tempor excepteur dolor duis.
+                Aliquip elit laborum proident aliquip nostrud cillum ex labore ex nulla.
+                Id anim laboris commodo deserunt laborum. Sint veniam duis non fugiat nostrud.
+                Cillum magna elit do Lorem id dolore esse id culpa sit.</p>
+        </section>
+        <section class="about-us">
+            <h2 class="title-small">We provide excellent service, barbeque, breakfast, a scenic view and more!</h2>
+            <p>Eiusmod ex eu nulla pariatur tempor excepteur dolor duis. Aliquip elit laborum proident aliquip
+                nostrud
+                cillum ex labore ex nulla. Id anim laboris commodo deserunt laborum. Sint veniam duis non fugiat
+                nostrud. Cillum magna elit do Lorem id dolore esse id culpa sit.</p>
+            <p>Excepteur incididunt ea sit eiusmod sint exercitation. Ut mollit dolor dolore veniam sint ea irure ea
+                excepteur esse nostrud. Consectetur occaecat sint laborum ipsum aute aliquip nostrud. Est incididunt
+                sint aliqua cillum. Ut aute consectetur minim ullamco aliquip officia culpa. Et eiusmod qui minim
+                qui
+                laborum sunt fugiat sint. Eiusmod officia consectetur nostrud nostrud cillum do.</p>
+        </section>
+    </div>
+    <div id="page2" class="page">
+        <div class="slide-down-error">
+            <p>The dates are not correct</p>
+        </div>
+        <section>
+            <div id="container" class="book-picking-container">
+                <div id="form">
+                    <select name="peopleamount" id="peopleamount">
+                        <option value="1">1 Person</option>
+                        <option value="2">2 People</option>
+                        <option value="3">3 People</option>
+                    </select>
+                    <input type="date" name="arrivaldate" id="arrivaldate">
+                    <input type="date" name="leavedate" id="leavedate">
+                    <input type="submit" value="Search" id="book-btn">
+                </div>
+            </div>
+        </section>
+        <section class="search-section">
+        </section>
+    </div>
+    <div id="page3" class="page">
+        <section class="cart">
+            <div id="container" class="cart-container">
+                <table>
+                    <tr>
+                        <th>Item</th>
+                        <th>Stay</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                    <tr class="noborder">
+                        <td class="bottom-text" onclick="updateHistory(2)">
+                            <span class="previous"> Continue shopping</span>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td class="bottom-text">
+                            <span class="next" onclick="makeBooking();"> Pay</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+        <section>
+            <h2>Upcoming stays</h2>
+        </section>
+    </div>
+    <div id="page4" class="page">
+        <section class="search">
+            <div id="container" class="search-container">
+                <div id="search-bar">
+                    <form action="">
+                        <input type="text" name="search" id="" placeholder="Search for...">
+                    </form>
+                </div>
+                <table>
+                    <tr>
+                        <th>Customer</th>
+                        <th>ID</th>
+                        <th>E-mail</th>
+                        <th>Status</th>
+                        <th>Contact</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr>
+                        <td><img src="https://source.unsplash.com/50x50" alt="">
+                            <p class="center">Customer Name</p>
+                        </td>
+                        <td>#42132</td>
+                        <td>cust.name@gmail.com</td>
+                        <td>
+                            <div id="unpaid">Unpaid</div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://source.unsplash.com/50x50" alt="">
+                            <p class="center">Another customer</p>
+                        </td>
+                        <td>#5453434</td>
+                        <td>another.cust@gmail.com</td>
+                        <td>
+                            <div id="paid">Paid</div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                </table>
+            </div>
+        </section>
+    </div>
+    <div id="page5" class="page">
+        <section>
+            <div id="container" class="login-container">
+                <img src="https://images.unsplash.com/photo-1532372576444-dda954194ad0?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=687&q=80"
+                    alt="">
+                <div id="form">
+                    <h2 class="logo">Sunny Hills</h2>
+                    <h2>Login</h2>
+                    <label for="loginusername">
+                        <h3>Username</h3>
+                    </label>
+                    <input type="text" name="loginusername" placeholder="Enter your username" id="loginusername">
+                    <label for="loginpwd">
+                        <h3>Password</h3>
+                    </label>
+                    <input type="password" name="loginpwd" placeholder="Enter your password" id="loginpwd">
+                    <input type="checkbox" name="logged-in" id="logged-in">
+                    <p class="keep-me-logged" onclick="">
+                        <label for="logged-in">Keep me logged in</label>
+                    </p>
+                    <p class="forgot-pwd"> <a href="#">Forgot password?</a></p>
+                    <input type="submit" value="Login" id="login-btn">
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="page6" class="page">
+        <section>
+            <div id="container" class="registration-container">
+                <img src="https://images.unsplash.com/photo-1532372576444-dda954194ad0?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=687&q=80"
+                    alt="">
+                <div id="form">
+                    <h2 class="logo">Sunny Hills</h2>
+                    <h2>Sign up with your email</h2>
+                    <p>Already have an account? <a onclick="updateHistory(5)">Sign in.</a></p>
+                    <label for="fname">First name</label>
+                    <input type="text" name="fname" id="fname" onkeyup="validate(this)">
+                    <label for="lname">Last name</label>
+                    <input type="text" name="lname" id="lname" onkeyup="validate(this)">
+                    <label for="email">E-mail</label><span class="small emailtext"></span>
+                    <input type="email" name="email" id="email" onkeyup="validate(this)">
+                    <label for="pwd">Password</label>
+                    <input type="password" name="pwd" id="pwd" onkeyup="validate(this)">
+                    <label for="pwdconfirm">Password confirmation</label>
+                    <input type="password" name="pwdconfirm" id="pwdconfirm" onkeyup="validate(this)">
+                    <input class="termsandservice" type="checkbox" name="termsandservice" id="termsandservice"
+                        onchange="validate(this)">
+                    <label for="termsandservice" class="small" id="termsandservicetext">I agree to the Terms of
+                        Service
+                        and Privacy
+                        Policy</label>
+                    <input type="submit" value="Create account" id="register-btn">
+                    <div id="output"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="page7" class="page">
+        <section>
+            <div id="container" class="user-container">
+                <div class="user-text">
+                    <img src="https://source.unsplash.com/100x100" alt="">
+                    <h2>Welcome <span class="username">user</span></h2>
+                </div>
+                <div class="user-features">
+                    <input type="submit" value="Current bookings" onclick="showCurrentBookings()">
+                    <input type="submit" value="Past bookings" onclick="showPastBookings()">
+                </div>
+                <div class="user-info">
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="page8" class="page"><img
+        id="gamechair"
+        src="https://opengameart.org/sites/default/files/styles/medium/public/ChairModern_0.png"
+        alt=""
+      />
+        <section>
+            <div id="container" class="game-container">
+                <div class="score">
+                  <span>Score: </span>
+                  <span id="smallScore">0</span>
+                </div>
+                  <div id="scoreBoard" class="scoreBoard">
+                    <span>
+                      <h1 id="bigScore">0</h1>
+                    </span>
+                    <span>Score</span>
+                    <button onClick="initGame();">Play</button>
+                    Previous Highscore
+                    <div class="highscorelist"></div>
+                  </div>
+                <canvas id="sandbox" onmousedown="mouseDown(event);"></canvas>
+                <script type="text/javascript" src="game.js"></script>
+                
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

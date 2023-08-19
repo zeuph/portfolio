@@ -48,9 +48,14 @@
 }
 
 .work__text {
+  flex-basis: 100%;
   text-align: center;
   font-style: italic;
   color: lightgray;
+}
+.work__textbox {
+  display: flex;
+  flex-direction: column;
 }
 .btn {
   padding: 0.2em 0;
