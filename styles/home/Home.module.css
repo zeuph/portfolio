@@ -36,6 +36,7 @@
   text-align: justify;
 }
 .home__social {
+  width: 100%;
   background: #1e212a;
   display: flex;
   gap: 3rem;
@@ -52,6 +53,7 @@
   fill: black;
 }
 .home__works {
+  margin: auto;
   display: flex;
   flex: 1;
   flex-direction: column;
